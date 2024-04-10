@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>media-upload Component</title>
+	<style>
+		* {
+			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		body {
+			font-size: 1rem;
+			font-weight: 400;
+			padding: 1em;
+		}
+		button {
+			font-size: inherit;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+		}
+		#panel-video-images {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1em;
+			margin: 1em 0;
+		}
+		.media-upload-1x1 {
+			height: 250px;
+			aspect-ratio: 1 / 1;
+		}
+		.media-upload-16x9 {
+			height: 250px;
+			aspect-ratio: 16 / 9;
+		}
+	</style>
+	<script src="media-upload.js"></script>
+</head>
+
+<body>
+	<h1>Web Component Test</h1>
+	<div id="panel-video-images">
+		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" src="sample.png"></media-upload>
+		<media-upload id="musicvideo-fanart" class="media-upload-16x9" types="image/jpeg image/png image/webp" addable></media-upload>
+	</div>
+	<div>
+		<button id="save-stuff" type="button" class="button-form">Save</button>
+	</div>
+	<script>
+		let fanartCount = 0
+
+		function truncateString(text) {
+			if (typeof text === 'string' && text.length > 32) {
+				return `${text.substring(0, 32)}...`
+			} else {
+				return text
+			}
+		}
+
+		function addFanart() {
+			console.log('User wants to add new fanart')
+			fanartCount++
+			const newFanart = document.createElement('media-upload')
+			newFanart.id = `musicvideo-fanart${fanartCount}`
+			newFanart.className = 'media-upload-16x9 extrafanart'
+			newFanart.setAttribute('types', 'image/jpeg image/png image/webp')
+			newFanart.setAttribute('addable', '')
+			newFanart.setAttribute('removable', '')
+			newFanart.dataset.fanart = fanartCount
+			newFanart.addEventListener('add', addFanart)
+			newFanart.addEventListener('remove', removeFanart)
+			document.getElementById('panel-video-images').appendChild(newFanart)
+		}
+
+		function removeFanart(event) {
+			console.log('User wants to remove fanart')
+			event.target.remove()
+		}
+
+		function saveStuff() {
+			const musicVideoFanart = []
+			const thumb = document.getElementById('musicvideo-thumb')
+			console.log(`Thumbnail: ${thumb.getAttribute('src') ? truncateString(thumb.getAttribute('src')) : 'None'}`)
+			const fanart = document.getElementById('musicvideo-fanart')
+			console.log(`Fanart: ${fanart.getAttribute('src') ? truncateString(fanart.getAttribute('src')) : 'None'}`)
+			if (fanart.getAttribute('src')) {
+				musicVideoFanart.push(fanart.getAttribute('src'))
+			}
+			const extrafanarts = document.querySelectorAll('.extrafanart')
+			for (const extrafanart of extrafanarts) {
+				console.log(`Extra Fanart [${extrafanart.dataset.fanart}]: ${extrafanart.getAttribute('src') ? truncateString(extrafanart.getAttribute('src')) : 'None'}`)
+				if (extrafanart.getAttribute('src')) {
+					musicVideoFanart.push(extrafanart.getAttribute('src'))
+				}
+			}
+			console.log(musicVideoFanart)
+		}
+
+		window.addEventListener('load', () => {
+			console.log('page fully loaded')
+			const fanart = document.getElementById('musicvideo-fanart')
+			fanart.addEventListener('add', addFanart)
+			fanart.addEventListener('remove', removeFanart)
+			document.getElementById('save-stuff').addEventListener('click', saveStuff)
+		})
+	</script>
+</body>
+
+</html>
