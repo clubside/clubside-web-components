@@ -95,14 +95,22 @@ class StarRating extends HTMLElement {
 			while (!parent.id) {
 				parent = parent.parentNode
 			}
-			const hoverStars = parent.dataset.stars
-			// console.log(hoverStars)
-			for (let i = 1; i < this.#starCount + 1; i++) {
-				const star = this.shadowRoot.getElementById(`star-rating-${i}`)
-				if (i <= hoverStars) {
-					star.classList.add('star-hover')
-				} else {
+			const hoverStars = Number(parent.dataset.stars)
+			// console.log(hoverStars, this.#stars)
+			if (hoverStars === this.#stars) {
+				for (let i = 1; i < this.#starCount + 1; i++) {
+					const star = this.shadowRoot.getElementById(`star-rating-${i}`)
+					star.classList.remove('star-selected')
 					star.classList.remove('star-hover')
+				}
+			} else {
+				for (let i = 1; i < this.#starCount + 1; i++) {
+					const star = this.shadowRoot.getElementById(`star-rating-${i}`)
+					if (i <= hoverStars) {
+						star.classList.add('star-hover')
+					} else {
+						star.classList.remove('star-hover')
+					}
 				}
 			}
 		})
