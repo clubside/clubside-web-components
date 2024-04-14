@@ -6,6 +6,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>media-upload Component Test Page</title>
 	<style>
+		:root {
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+		}
 		* {
 			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 		}
@@ -33,6 +38,11 @@
 			height: 250px;
 			aspect-ratio: 16 / 9;
 		}
+		media-upload:focus {
+			border-color: hsl(var(--input-focus-h) var(--input-focus-s) var(--input-focus-l));
+			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
+			outline: 3px solid transparent;
+		}
 	</style>
 	<script src="media-upload.js"></script>
 </head>
@@ -41,7 +51,7 @@
 	<h1>media-upload test</h1>
 	<div id="panel-video-images">
 		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" src="sample.png"></media-upload>
-		<media-upload id="musicvideo-fanart" class="media-upload-16x9" types="image/jpeg image/png image/webp" addable></media-upload>
+		<media-upload id="musicvideo-fanart" class="media-upload-16x9" addable></media-upload>
 	</div>
 	<div>
 		<button id="save-stuff" type="button" class="button-form">Save</button>
@@ -97,7 +107,6 @@
 		}
 
 		window.addEventListener('load', () => {
-			console.log('page fully loaded')
 			const fanart = document.getElementById('musicvideo-fanart')
 			fanart.addEventListener('add', addFanart)
 			fanart.addEventListener('remove', removeFanart)

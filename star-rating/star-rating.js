@@ -107,7 +107,12 @@ class StarRating extends HTMLElement {
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
+				:host {
+					box-sizing: border-box;
+					display: inline-flex;
+				}
 				#star-rating {
+					box-sizing: border-box;
 					display: inline-flex;
 				}
 				.star-input {
@@ -129,13 +134,16 @@ class StarRating extends HTMLElement {
 					outline: none;
 				}
 			</style>
-			<div id="star-rating" tabindex="0"></div>`
+			<div id="star-rating"></div>`
 		}
 
 	connectedCallback() {
 		// console.log('connected')
 		if (!this.hasAttribute('stars')) {
 			this.setAttribute('stars', '5')
+		}
+		if (!this.hasAttribute('tabindex')) {
+			this.setAttribute('tabindex', '0')
 		}
 		this.#connected = true
 		this.#starRating = this.shadowRoot.getElementById('star-rating')
@@ -180,15 +188,15 @@ class StarRating extends HTMLElement {
 		this.#starRating.addEventListener('mouseleave', this.#onMouseLeave = () => {
 			this.#updateStars()
 		})
-		this.#starRating.addEventListener('keydown', this.#onKeyDown = (event) => {
-			// console.log(`${this.id} keycode ${event.keyCode}`)
-			switch (event.keyCode) {
-				case 37:
+		this.addEventListener('keydown', this.#onKeyDown = (event) => {
+			// console.log(`${this.id} key ${event.key} code ${event.code}`)
+			switch (event.key) {
+				case 'ArrowLeft':
 					if (this.value) {
 						this.setAttribute('value', Number(this.value) - 1)
 					}
 					break
-				case 39:
+				case 'ArrowRight':
 					if (this.value && Number(this.value) < Number(this.stars)) {
 						this.setAttribute('value', Number(this.value) + 1)
 					} else if (this.value && Number(this.value) === Number(this.stars)) {
@@ -206,7 +214,7 @@ class StarRating extends HTMLElement {
 		this.#starRating.removeEventListener('click', this.#onClick)
 		this.#starRating.removeEventListener('mousemove', this.#onMouseMove)
 		this.#starRating.removeEventListener('mouseleave', this.#onMouseLeave)
-		this.#starRating.removeEventListener('keydown', this.#onKeyDown)
+		this.removeEventListener('keydown', this.#onKeyDown)
 	}
 
 }
