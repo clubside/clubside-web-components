@@ -21,26 +21,26 @@ class StarRating extends HTMLElement {
 	}
 
 	set stars (value) {
-		let newValue
-		if (value === '') {
-			newValue = 5
-		} else {
-			try {
-				const newStarCount = Number(value)
-				if (newStarCount < 1) {
-					newValue = 5
-				} else {
-					newValue = newStarCount
-				}
-			} catch {
-				newValue = 5
+		let setStars = Number(this.getAttribute('stars'))
+		let oldStars = Number(this.getAttribute('stars'))
+		const newStars = Number(value)
+		const setValue = Number(this.getAttribute('value'))
+		// console.log('set stars', this.stars, setStars, newStars, setValue)
+		if (newStars) {
+			if (newStars < 1) {
+				setStars = 5
+			} else {
+				setStars = newStars
 			}
+		} else {
+			setStars = 5
 		}
-		if (this.value > newValue) {
-			this.value = newValue
+		if (setValue > setStars) {
+			this.setAttribute('value', setStars)
 		}
-		this.setAttribute('stars', newValue)
-		if (this.#connected && !this.#updating) {
+		this.setAttribute('stars', setStars)
+		if (this.#connected && oldStars === newStars) {
+			// console.log('drawing')
 			this.#drawStars()
 		}
 	}
@@ -50,33 +50,28 @@ class StarRating extends HTMLElement {
 	}
 
 	set value (value) {
-		let newValue
-		if (value === '') {
-			newValue = null
+		let setValue = Number(this.getAttribute('value'))
+		let oldValue = Number(this.getAttribute('value'))
+		const newValue = Number(value)
+		const setStars = Number(this.getAttribute('stars'))
+		// console.log('set value', this.value, setValue, newValue, setStars)
+		if (newValue < 1 || newValue > setStars) {
+			setValue = null
 		} else {
-			try {
-				const newStars = Number(value)
-				if (newStars < 1 || newStars > this.stars) {
-					newValue = null
-				} else {
-					newValue = newStars
-				}
-			} catch {
-				newValue = null
-			}
+			setValue = newValue
 		}
 		if (newValue) {
-			this.setAttribute('value', newValue)
+			this.setAttribute('value', setValue)
 		} else {
 			this.removeAttribute('value')
 		}
-		if (this.#connected && !this.#updating) {
+		if (this.#connected && oldValue === newValue) {
+			// console.log('updating')
 			this.#updateStars()
 		}
 	}
 
 	#connected = false
-	#updating = false
 	#starRating
 	#onClick
 	#onMouseMove
@@ -138,16 +133,13 @@ class StarRating extends HTMLElement {
 		}
 
 	connectedCallback() {
-		this.#connected = true
 		// console.log('connected')
 		if (!this.hasAttribute('stars')) {
-			this.#updating = true
 			this.setAttribute('stars', '5')
-			this.#updating = false
 		}
+		this.#connected = true
 		this.#starRating = this.shadowRoot.getElementById('star-rating')
 		this.#starRating.addEventListener('click', this.#onClick = (event) => {
-			this.#updating = true
 			let parent = event.target
 			while (!parent.id) {
 				parent = parent.parentNode
@@ -160,7 +152,6 @@ class StarRating extends HTMLElement {
 			}
 			// console.log(parent)
 			this.#updateStars()
-			this.#updating = false
 		})
 		this.#starRating.addEventListener('mousemove', this.#onMouseMove = (event) => {
 			let parent = this.shadowRoot.elementFromPoint(event.clientX, event.clientY)
@@ -169,7 +160,7 @@ class StarRating extends HTMLElement {
 			}
 			const hoverValue = Number(parent.dataset.stars)
 			// console.log(hoverValue, this.#stars)
-			if (hoverValue === this.value) {
+			if (hoverValue === Number(this.value)) {
 				for (let i = 1; i < Number(this.stars) + 1; i++) {
 					const star = this.shadowRoot.getElementById(`star-rating-${i}`)
 					star.classList.remove('star-selected')
@@ -194,16 +185,16 @@ class StarRating extends HTMLElement {
 			switch (event.keyCode) {
 				case 37:
 					if (this.value) {
-						this.value = String(Number(this.value) - 1)
+						this.setAttribute('value', Number(this.value) - 1)
 					}
 					break
 				case 39:
 					if (this.value && Number(this.value) < Number(this.stars)) {
-						this.value = String(Number(this.value) + 1)
+						this.setAttribute('value', Number(this.value) + 1)
 					} else if (this.value && Number(this.value) === Number(this.stars)) {
-						this.value = ''
+						this.removeAttribute('value')
 					} else {
-						this.value = '1'
+						this.setAttribute('value', '1')
 					}
 					break
 			}
