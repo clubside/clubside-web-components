@@ -6,6 +6,24 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>star-rating Component Test Page</title>
 	<style>
+		:root {
+			--background-h: 0;
+			--background-s: 0%;
+			--background-l: 100%;
+			--foreground-h: 0;
+			--foreground-s: 0%;
+			--foreground-l: 0%;
+			--input-border: #8b8a8b;
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+			--button-standard: #3e68ff;
+			--button-active : #0037fe;
+			--button-focus: #0029be;
+			--button-disabled: #aaa;
+			--panel-background: #F5F6F7;
+			--item-hover: #AFDBF5;
+		}
 		* {
 			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 		}
@@ -24,6 +42,11 @@
 			line-height: 0;
 			margin-block: 1rem;
 		}
+		star-rating:focus {
+			border-color: hsl(var(--input-focus-h) var(--input-focus-s) var(--input-focus-l));
+			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
+			outline: 3px solid transparent;
+		}
 	</style>
 	<script src="star-rating.js"></script>
 </head>
@@ -38,7 +61,7 @@
 		<button id="save-one" type="button" class="button-form">Save</button>
 	</div>
 	<div class="test-panel" style="font-size: 4em;">
-		<star-rating id="stars2" stars="5"></star-rating>
+		<star-rating id="stars2"></star-rating>
 	</div>
 	<div>
 		<button id="set-to-three" type="button" class="button-form">Set to 3 Stars</button>
@@ -46,7 +69,6 @@
 	</div>
 	<script>
 		window.addEventListener('load', () => {
-			console.log('page fully loaded')
 			document.getElementById('set-to-one').addEventListener('click', () => {
 				document.getElementById('stars1').setAttribute('value', '1')
 			})

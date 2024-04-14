@@ -350,7 +350,7 @@ class MediaUpload extends HTMLElement {
 	}
 
 	connectedCallback() {
-		console.log('Component connected')
+		// console.log('Component connected')
 		this.#connected = true
 		this.#setElements()
 		this.#updateFileTypes()
@@ -377,7 +377,7 @@ class MediaUpload extends HTMLElement {
 		this.#mediaUpload.addEventListener('drop', this.#onDrop = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			console.log('upload drop')
+			// console.log('upload drop')
 			const dt = event.dataTransfer
 			if (dt.files.length > 1) {
 				console.error('More than one file dropped')
@@ -438,7 +438,7 @@ class MediaUpload extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		console.log(`Attribute ${name} has changed from ${typeof oldValue === 'string' && oldValue.length > 32 ? oldValue.substring(0, 32) + '...' : oldValue} to ${typeof newValue === 'string' && newValue.length > 32 ? newValue.substring(0, 32) + '...' : newValue}.`)
+		// console.log(`Attribute ${name} has changed from ${typeof oldValue === 'string' && oldValue.length > 32 ? oldValue.substring(0, 32) + '...' : oldValue} to ${typeof newValue === 'string' && newValue.length > 32 ? newValue.substring(0, 32) + '...' : newValue}.`)
 		switch (name) {
 			case 'types':
 				this.#mediaAccepted = newValue.split(' ')
