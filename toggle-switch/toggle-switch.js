@@ -6,7 +6,7 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ['checked', 'disabled', 'value']
+		return ['checked', 'disabled']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -23,7 +23,7 @@ class ToggleSwitch extends HTMLElement {
 	set checked (value) {
 		// console.log(this.id, 'checked', this.hasAttribute('checked'), value, value === null)
 		if (this.#connected && value !== null && value !== '') {
-			console.log(this.id, 'toggle checked')
+			// console.log(this.id, 'toggle checked')
 			this.toggleAttribute('checked', value)
 		}
 	}
@@ -35,17 +35,9 @@ class ToggleSwitch extends HTMLElement {
 	set disabled (value) {
 		// console.log(this.id, 'disabled', this.hasAttribute('disabled'), value, value === null)
 		if (this.#connected && value !== null && value !== '') {
-			console.log(this.id, 'toggle disabled')
+			// console.log(this.id, 'toggle disabled')
 			this.toggleAttribute('disabled', value)
 		}
-	}
-
-	get value () {
-		return this.getAttribute('value')
-	}
-
-	set value (value) {
-		console.log(this.id, 'value', this.getAttribute('value'), value, value === null)
 	}
 
 	toggle = () => {
@@ -53,7 +45,6 @@ class ToggleSwitch extends HTMLElement {
             this.checked = !this.checked
         }
     }
-
 
 	#connected = false
 	#onClick
@@ -64,12 +55,13 @@ class ToggleSwitch extends HTMLElement {
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
-				:host {
+				* {
 					box-sizing: border-box;
+				}
+				:host {
 					display: inline-block;
-					width: 1.6em;
 					height: 1em;
-					padding: 0.075em;
+					aspect-ratio: 5 / 3;
 					background: linear-gradient(90deg, rgb(226 226 227 / 100%) 0%, rgb(232 232 235 / 100%) 100%);
 					border-radius: 1em;
 					transition: all 0.256s;
@@ -77,17 +69,21 @@ class ToggleSwitch extends HTMLElement {
 					cursor: pointer;
 				}
 				span {
-					width: 60%;
-					height: 100%;
+					height: 1em;
+					aspect-ratio: 1 / 1;
 					display: inline-block;
 					background: white;
 					transition: all 0.256s;
+					border-style: solid;
+					border-width: 0.075em;
+					border-color: #d7d7d8;
 					border-radius: 50%;
 				}
 				:host([checked]) {
 					background: linear-gradient(90deg, rgb(60 201 94 / 100%) 0%, rgb(56 194 90 / 100%) 100%);
 				}
 				:host([checked]) span {
+					border-color: #30b651;
 					transform: translateX(70%);
 				}
 				:host([disabled]) {
