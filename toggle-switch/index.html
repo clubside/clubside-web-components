@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>toggle-switch Component Test Page</title>
+	<style>
+		:root {
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+		}
+		* {
+			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		body {
+			font-size: 1rem;
+			font-weight: 400;
+			padding: 1em;
+		}
+		button {
+			font-size: inherit;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+		}
+		.test-panel {
+			font-size: 1em;
+			line-height: 0;
+			margin-block: 1rem;
+		}
+		toggle-switch:focus {
+			border-color: hsl(var(--input-focus-h) var(--input-focus-s) var(--input-focus-l));
+			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
+			outline: 3px solid transparent;
+		}
+	</style>
+	<script src="toggle-switch.js"></script>
+</head>
+
+<body>
+	<h1>toggle-switch test</h1>
+	<div class="test-panel" style="font-size: 2em;">
+		<toggle-switch id="toggle1" value="toggle1"></toggle-switch>
+	</div>
+	<div>
+		<button id="set-one" type="button" class="button-form">Check</button>
+		<button id="save-one" type="button" class="button-form">Save</button>
+	</div>
+	<div class="test-panel" style="font-size: 3em;">
+		<toggle-switch id="toggle2" checked></toggle-switch>
+	</div>
+	<div>
+		<button id="set-two" type="button" class="button-form">Uncheck</button>
+		<button id="save-two" type="button" class="button-form">Save</button>
+	</div>
+	<div class="test-panel" style="font-size: 4em;">
+		<toggle-switch id="toggle3" disabled></toggle-switch>
+	</div>
+	<div>
+		<button id="set-three" type="button" class="button-form">Enable</button>
+		<button id="set-four" type="button" class="button-form">Disable</button>
+		<button id="save-three" type="button" class="button-form">Save</button>
+	</div>
+	<script>
+		window.addEventListener('load', () => {
+			document.getElementById('set-one').addEventListener('click', () => {
+				document.getElementById('toggle1').setAttribute('checked', '')
+			})
+			document.getElementById('save-one').addEventListener('click', () => {
+				console.log(`Toggle 1 Checked = ${document.getElementById('toggle1').getAttribute('checked')}`)
+			})
+			document.getElementById('set-two').addEventListener('click', () => {
+				document.getElementById('toggle2').removeAttribute('checked')
+			})
+			document.getElementById('save-two').addEventListener('click', () => {
+				console.log(`Toggle 2 Checked = ${document.getElementById('toggle2').getAttribute('checked')}`)
+			})
+			document.getElementById('set-three').addEventListener('click', () => {
+				document.getElementById('toggle3').removeAttribute('disabled')
+			})
+			document.getElementById('set-four').addEventListener('click', () => {
+				document.getElementById('toggle3').setAttribute('disabled', '')
+			})
+			document.getElementById('save-three').addEventListener('click', () => {
+				console.log(`Toggle 3 Checked = ${document.getElementById('toggle3').getAttribute('checked')}`)
+			})
+		})
+	</script>
+</body>
+
+</html>

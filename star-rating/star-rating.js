@@ -135,7 +135,7 @@ class StarRating extends HTMLElement {
 				}
 			</style>
 			<div id="star-rating"></div>`
-		}
+	}
 
 	connectedCallback() {
 		// console.log('connected')
