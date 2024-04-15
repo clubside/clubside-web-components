@@ -64,18 +64,22 @@
 		<button id="save-three" type="button" class="button-form">Save</button>
 	</div>
 	<script>
+		function outputChecked(event) {
+			console.log(event.target.id, event.target.checked)
+		}
+
 		window.addEventListener('load', () => {
 			document.getElementById('check-one').addEventListener('click', () => {
 				document.getElementById('toggle1').setAttribute('checked', '')
 			})
 			document.getElementById('save-one').addEventListener('click', () => {
-				console.log(`Toggle 1 Checked = ${document.getElementById('toggle1').getAttribute('checked')}`)
+				console.log(`Toggle 1 Checked = ${document.getElementById('toggle1').checked}`)
 			})
 			document.getElementById('uncheck-two').addEventListener('click', () => {
 				document.getElementById('toggle2').removeAttribute('checked')
 			})
 			document.getElementById('save-two').addEventListener('click', () => {
-				console.log(`Toggle 2 Checked = ${document.getElementById('toggle2').getAttribute('checked')}`)
+				console.log(`Toggle 2 Checked = ${document.getElementById('toggle2').checked}`)
 			})
 			document.getElementById('enable-three').addEventListener('click', () => {
 				document.getElementById('toggle3').removeAttribute('disabled')
@@ -87,8 +91,11 @@
 				document.getElementById('toggle3').toggle()
 			})
 			document.getElementById('save-three').addEventListener('click', () => {
-				console.log(`Toggle 3 Checked = ${document.getElementById('toggle3').getAttribute('checked')}`)
+				console.log(`Toggle 3 Checked = ${document.getElementById('toggle3').checked}`)
 			})
+			document.getElementById('toggle1').addEventListener('change', outputChecked)
+			document.getElementById('toggle2').addEventListener('change', outputChecked)
+			document.getElementById('toggle3').addEventListener('change', outputChecked)
 		})
 	</script>
 </body>

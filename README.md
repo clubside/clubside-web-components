@@ -66,7 +66,7 @@ An approximation of the iOS toggle as a replacement for the standard `<input typ
 
 All attributes are optional.
 
-* `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`.
+* `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the value changes, current value can be retrieved from `event.target.checked`.
 * `disabled` indicates whether the control can be toggled by the user.
 
 #### Methods

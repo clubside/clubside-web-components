@@ -10,9 +10,14 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		// console.log(`Attribute ${name} has changed from ${oldValue} to ${newValue}.`)
 		if (oldValue !== newValue) {
-			this[name] = newValue
+			switch(name) {
+				case 'checked':
+					this.#updateChecked(true)
+					break
+				case 'disabled':
+					this.#updateDisabled()
+			}
 		}
 	}
 
@@ -21,11 +26,7 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	set checked (value) {
-		// console.log(this.id, 'checked', this.hasAttribute('checked'), value, value === null)
-		if (this.#connected && value !== null && value !== '') {
-			// console.log(this.id, 'toggle checked')
-			this.toggleAttribute('checked', value)
-		}
+		this.toggleAttribute('checked', value)
 	}
 
 	get disabled () {
@@ -33,11 +34,7 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	set disabled (value) {
-		// console.log(this.id, 'disabled', this.hasAttribute('disabled'), value, value === null)
-		if (this.#connected && value !== null && value !== '') {
-			// console.log(this.id, 'toggle disabled')
-			this.toggleAttribute('disabled', value)
-		}
+		this.toggleAttribute('disabled', value)
 	}
 
 	toggle = () => {
@@ -46,9 +43,20 @@ class ToggleSwitch extends HTMLElement {
         }
     }
 
-	#connected = false
 	#onClick
 	#onKeyDown
+	#toggleSwitchChange = new CustomEvent('change')
+
+	#updateChecked(dispatch = false) {
+        this.setAttribute('aria-checked', this.checked.toString())
+        if (dispatch) {
+			this.dispatchEvent(this.#toggleSwitchChange)
+		}
+    }
+
+	#updateDisabled() {
+        this.setAttribute('aria-disabled', this.disabled.toString())
+    }
 
 	constructor() {
 		super()
@@ -95,20 +103,18 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	connectedCallback() {
-		// console.log('connected')
 		if (!this.hasAttribute('role')) {
 			this.setAttribute('role', 'switch')
 		}
 		if (!this.hasAttribute('tabindex')) {
 			this.setAttribute('tabindex', '0')
 		}
-		this.#connected = true
+		this.#updateChecked(false)
+        this.#updateDisabled()
 		this.addEventListener('click', this.#onClick = () => {
-			// console.log(this.hasAttribute('checked'))
 			this.toggle()
 		})
 		this.addEventListener('keydown', this.#onKeyDown = (event) => {
-			// console.log(`${this.id} key ${event.key} code ${event.code}`)
 			switch (event.key) {
 				case ' ':
 				case 'Enter':
