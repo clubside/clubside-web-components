@@ -17,7 +17,7 @@ class StarRating extends HTMLElement {
 	}
 
 	get stars () {
-		return this.getAttribute('stars')
+		return Number(this.getAttribute('stars'))
 	}
 
 	set stars (value) {
@@ -46,7 +46,7 @@ class StarRating extends HTMLElement {
 	}
 
 	get value () {
-		return this.getAttribute('value')
+		return Number(this.getAttribute('value'))
 	}
 
 	set value (value) {
@@ -107,12 +107,13 @@ class StarRating extends HTMLElement {
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
-				:host {
+				* {
 					box-sizing: border-box;
+				}
+				:host {
 					display: inline-flex;
 				}
-				#star-rating {
-					box-sizing: border-box;
+				span {
 					display: inline-flex;
 				}
 				.star-input {
@@ -134,7 +135,7 @@ class StarRating extends HTMLElement {
 					outline: none;
 				}
 			</style>
-			<div id="star-rating"></div>`
+			<span></span>`
 	}
 
 	connectedCallback() {
@@ -146,7 +147,7 @@ class StarRating extends HTMLElement {
 			this.setAttribute('tabindex', '0')
 		}
 		this.#connected = true
-		this.#starRating = this.shadowRoot.getElementById('star-rating')
+		this.#starRating = this.shadowRoot.querySelector('span')
 		this.#starRating.addEventListener('click', this.#onClick = (event) => {
 			let parent = event.target
 			while (!parent.id) {
