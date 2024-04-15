@@ -6,7 +6,7 @@ class MediaUpload extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ['types', 'src', 'addable', 'removable']
+		return ['types', 'value', 'addable', 'removable']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -46,15 +46,15 @@ class MediaUpload extends HTMLElement {
 		}
 	}
 
-	get src () {
-		return this.getAttribute('src')
+	get value () {
+		return this.getAttribute('value')
 	}
 
-	set src (value) {
+	set value (value) {
 		if (value) {
-			this.setAttribute('src', value)
+			this.setAttribute('value', value)
 		} else {
-			this.removeAttribute('src')
+			this.removeAttribute('value')
 		}
 		if (this.#connected) {
 			this.#updateSource()
@@ -122,7 +122,7 @@ class MediaUpload extends HTMLElement {
 		const reader = new FileReader()
 		reader.readAsDataURL(dt.files[0])
 		reader.onloadend = () => {
-			this.setAttribute('src', reader.result)
+			this.setAttribute('value', reader.result)
 			this.#mediaUpload.classList.remove('media-upload-wait')
 		}
 	}
@@ -136,7 +136,7 @@ class MediaUpload extends HTMLElement {
 		})
 		if (!this.#mediaImagePreview.classList.contains('hidden')) {
 			const img = document.createElement('img')
-			img.setAttribute('src', this.src)
+			img.setAttribute('src', this.value)
 			img.setAttribute('style', 'width: 100vw; height: 100vh; object-fit: contain;')
 			overlay.appendChild(img)
 		} else if (!this.#mediaVideoPreview.classList.contains('hidden')) {
@@ -162,8 +162,8 @@ class MediaUpload extends HTMLElement {
 		const mediaZoom = this.shadowRoot.getElementById('media-zoom')
 		const mediaAdd = this.shadowRoot.getElementById('media-add')
 		const mediaRemove = this.shadowRoot.getElementById('media-remove')
-		// console.log(this.id, this.addable, this.removable, this.src)
-		if (this.src) {
+		// console.log(this.id, this.addable, this.removable, this.value)
+		if (this.value) {
 			mediaClear.classList.remove('hidden')
 			// mediaEdit.classList.remove('hidden')
 			mediaZoom.classList.remove('hidden')
@@ -182,7 +182,7 @@ class MediaUpload extends HTMLElement {
 		} else {
 			mediaRemove.classList.add('hidden')
 		}
-		if (this.src || this.addable !== null || this.removable !== null) {
+		if (this.value || this.addable !== null || this.removable !== null) {
 			this.#mediaActions.classList.remove('hidden')
 		} else {
 			this.#mediaActions.classList.add('hidden')
@@ -226,32 +226,32 @@ class MediaUpload extends HTMLElement {
 
 	#updateSource() {
 		let sourceType, imageSource, videoSource
-		// console.log(this.id, this.src)
-		if (this.src) {
-			if (this.src.length > 4 && this.src.substring(0, 5) === 'data:') {
-				if (this.src.substring(0, 5) === 'data:') {
-					const dataUri = this.src.split(';')
+		// console.log(this.id, this.value)
+		if (this.value) {
+			if (this.value.length > 4 && this.value.substring(0, 5) === 'data:') {
+				if (this.value.substring(0, 5) === 'data:') {
+					const dataUri = this.value.split(';')
 					const dataSource = dataUri[0].split(':')
 					// console.log(dataUri[0], dataSource[1])
 					if (this.#mediaImage.includes(dataSource[1])) {
-						imageSource = this.src
+						imageSource = this.value
 					} else if (this.#mediaVideo.includes(dataSource[1])) {
-						videoSource = this.src
+						videoSource = this.value
 						sourceType = dataSource[1]
 					} else {
 						console.error('Inavid Data URI')
 					}
 				}
 			} else {
-				sourceType = this.src.substring(this.src.lastIndexOf('.') + 1)
+				sourceType = this.value.substring(this.value.lastIndexOf('.') + 1)
 				switch (sourceType) {
 					case 'mp4':
 					case 'webm':
-						videoSource = this.src
+						videoSource = this.value
 						sourceType = `video/${sourceType}`
 						break
 					default:
-						imageSource = this.src
+						imageSource = this.value
 				}
 			}
 		}
@@ -449,7 +449,7 @@ class MediaUpload extends HTMLElement {
 		this.shadowRoot.getElementById('media-clear').addEventListener('click', this.#onClear = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			this.removeAttribute('src')
+			this.removeAttribute('value')
 		})
 		this.shadowRoot.getElementById('media-zoom').addEventListener('click', this.#onZoom = (event) => {
 			event.preventDefault()
@@ -459,13 +459,13 @@ class MediaUpload extends HTMLElement {
 		this.shadowRoot.getElementById('media-remove').addEventListener('click', this.#onRemove = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			console.log('Requested remove')
+			// console.log('Requested remove')
 			this.dispatchEvent(this.#mediaUploadRemove)
 		})
 		this.shadowRoot.getElementById('media-add').addEventListener('click', this.#onAdd = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			console.log('Requested add')
+			// console.log('Requested add')
 			this.dispatchEvent(this.#mediaUploadAdd)
 		})
 		this.addEventListener('keydown', this.#onKeyDown = (event) => {
@@ -477,13 +477,13 @@ class MediaUpload extends HTMLElement {
 				case 'Escape':
 					if (document.getElementById('media-upload-zoom')) {
 						document.getElementById('media-upload-zoom').remove()
-					} else if (this.src) {
-						this.removeAttribute('src')
+					} else if (this.value) {
+						this.removeAttribute('value')
 					}
 					break
 				case 'z':
 				case 'Z':
-					if (this.src) {
+					if (this.value) {
 						this.#zoomMedia()
 					}
 					break

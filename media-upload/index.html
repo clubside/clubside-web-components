@@ -50,7 +50,7 @@
 <body>
 	<h1>media-upload test</h1>
 	<div id="panel-video-images">
-		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" src="sample.png"></media-upload>
+		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" value="sample.png"></media-upload>
 		<media-upload id="musicvideo-fanart" class="media-upload-16x9" addable></media-upload>
 	</div>
 	<div>
@@ -90,17 +90,17 @@
 		function saveStuff() {
 			const musicVideoFanart = []
 			const thumb = document.getElementById('musicvideo-thumb')
-			console.log(`Thumbnail: ${thumb.getAttribute('src') ? truncateString(thumb.getAttribute('src')) : 'None'}`)
+			console.log(`Thumbnail: ${thumb.getAttribute('value') ? truncateString(thumb.getAttribute('value')) : 'None'}`)
 			const fanart = document.getElementById('musicvideo-fanart')
-			console.log(`Fanart: ${fanart.getAttribute('src') ? truncateString(fanart.getAttribute('src')) : 'None'}`)
-			if (fanart.getAttribute('src')) {
-				musicVideoFanart.push(fanart.getAttribute('src'))
+			console.log(`Fanart: ${fanart.getAttribute('value') ? truncateString(fanart.getAttribute('value')) : 'None'}`)
+			if (fanart.getAttribute('value')) {
+				musicVideoFanart.push(fanart.getAttribute('value'))
 			}
 			const extrafanarts = document.querySelectorAll('.extrafanart')
 			for (const extrafanart of extrafanarts) {
-				console.log(`Extra Fanart [${extrafanart.dataset.fanart}]: ${extrafanart.getAttribute('src') ? truncateString(extrafanart.getAttribute('src')) : 'None'}`)
-				if (extrafanart.getAttribute('src')) {
-					musicVideoFanart.push(extrafanart.getAttribute('src'))
+				console.log(`Extra Fanart [${extrafanart.dataset.fanart}]: ${extrafanart.getAttribute('value') ? truncateString(extrafanart.getAttribute('value')) : 'None'}`)
+				if (extrafanart.getAttribute('value')) {
+					musicVideoFanart.push(extrafanart.getAttribute('value'))
 				}
 			}
 			console.log(musicVideoFanart)
