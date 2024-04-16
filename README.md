@@ -12,7 +12,7 @@ There are many image upload with preview solutions out there, this one is mine. 
 
 ### Usage
 
-`<media-upload types="image/jpeg image/png image/webp" src="sample.png" addable removable>`
+`<media-upload types="image/jpeg image/png image/webp" value="sample.png" addable removable>`
 
 #### Attributes
 
@@ -33,7 +33,7 @@ The element has a number of internal styles that I probably need to work on sinc
 
 ## star-rating
 
-Another common pattern, this one was very frustrating owing to how `document.createElement` and `svg` don't play well together. No half-stars here, I'd have to find a different way to render the stars and probably lose the fancy schmancy rounded corners (unless som `CSS` genius wishes to step foward 😀), but Kodi only uses one to five for it's `userrating`. But I'm happy with the live highlight of stars as you hover over the component. Clicking on the current number of stars is how you remove the value.
+Another common pattern, this one was very frustrating owing to how `document.createElement` and `svg` don't play well together. No half-stars here, I'd have to find a different way to render the stars and probably lose the fancy schmancy rounded corners (unless som `CSS` genius wishes to step forward 😀), but Kodi only uses one to five for it's `userrating`. But I'm happy with the live highlight of stars as you hover over the component. Clicking on the current number of stars is how you remove the value.
 
 ### Usage
 
@@ -71,7 +71,7 @@ All attributes are optional.
 
 #### Methods
 
-* `.toggle()` can be used to simulate user interactivity with the component. Calling `element.toggle()` is the same as sending a `click` event which will be ignored if the componet currently has the `disabled` attribute set. Using `element.setAttribute(state)` is the only way to change the state regardless of `disabled`.
+* `.toggle()` can be used to simulate user interactivity with the component. Calling `element.toggle()` is the same as sending a `click` event which will be ignored if the component currently has the `disabled` attribute set. Using `element.setAttribute(state)` is the only way to change the state regardless of `disabled`.
 
 #### Keyboard Support
 
