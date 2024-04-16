@@ -12,92 +12,59 @@ class MediaUpload extends HTMLElement {
 	attributeChangedCallback(name, oldValue, newValue) {
 		// console.log(`Attribute ${name} has changed from ${typeof oldValue === 'string' && oldValue.length > 32 ? oldValue.substring(0, 32) + '...' : oldValue} to ${typeof newValue === 'string' && newValue.length > 32 ? newValue.substring(0, 32) + '...' : newValue}.`)
 		if (oldValue !== newValue) {
-			this[name] = newValue
+			switch (name) {
+				case 'addable':
+					this.#updateAddable()
+					break
+				case 'removable':
+					this.#updateRemovable()
+					break
+				case 'value':
+					this.#updateValue(true)
+					break
+				case 'types':
+					this.#updateTypes()
+					break
+			}
 		}
 	}
 
-	get addable () {
-		return this.getAttribute('addable')
+	get addable() {
+		return this.hasAttribute('addable')
 	}
 
-	set addable (value) {
-		if (value === '') {
-			this.setAttribute('addable', '')
-		} else {
-			this.removeAttribute('addable')
-		}
-		if (this.#connected) {
-			this.#updateActions()
-		}
+	set addable(value) {
+		this.toggleAttribute('addable', value)
 	}
 
 	get removable() {
-		return this.getAttribute('removable')
+		return this.hasAttribute('removable')
 	}
 
-	set removable (value) {
-		if (value === '') {
-			this.setAttribute('removable', '')
-		} else {
-			this.removeAttribute('removable')
-		}
-		if (this.#connected) {
-			this.#updateActions()
-		}
+	set removable(value) {
+		this.toggleAttribute('removable', value)
 	}
 
-	get value () {
+	get value() {
 		return this.getAttribute('value')
 	}
 
-	set value (value) {
-		if (value) {
-			this.setAttribute('value', value)
-		} else {
-			this.removeAttribute('value')
-		}
-		if (this.#connected) {
-			this.#updateSource()
-		}
+	set value(value) {
+		this.setAttribute('value', value)
 	}
 
-	get types () {
+	get types() {
 		return this.getAttribute('types')
 	}
 
-	set types (value) {
-		const oldValue = this.getAttribute('types')
-		const newTypes = value ? value.split(' ') : []
-		// console.log('set types()')
-		// console.log(this.types, oldValue, value, newTypes, oldValue === value)
-		if (newTypes.length < 1) {
-			this.setAttribute('types', this.#mediaAccepted.join(' '))
-		} else {
-			const valueAccepted = []
-			for (const type of newTypes) {
-				if (this.#mediaAccepted.includes(type)) {
-					valueAccepted.push(type)
-				}
-			}
-			// console.log(valueAccepted)
-			if (valueAccepted.length < 1) {
-				this.setAttribute('types', this.#mediaAccepted.join(' '))
-			} else {
-				this.setAttribute('types', valueAccepted.join(' '))
-			}
-		}
-		// console.log('update', oldValue, value, oldValue === value)
-		if (this.#connected && value && oldValue === value) {
-			// console.log('update media types')
-			this.#updateMediaTypes()
-		}
+	set types(value) {
+		this.setAttribute('types', value)
 	}
 
 	#connected = false
 	#mediaImage = ['image/jpeg', 'image/png', 'image/webp']
 	#mediaVideo = ['video/mp4', 'video/webm']
 	#mediaAccepted = this.#mediaImage.concat(this.#mediaVideo)
-	#mediaUpload = undefined
 	#mediaInput = undefined
 	#mediaTypes = undefined
 	#mediaImagePreview = undefined
@@ -114,16 +81,44 @@ class MediaUpload extends HTMLElement {
 	#onRemove
 	#onAdd
 	#onKeyDown
-	#mediaUploadRemove = new CustomEvent('remove')
 	#mediaUploadAdd = new CustomEvent('add')
+	#mediaUploadChange = new CustomEvent('change')
+	#mediaUploadRemove = new CustomEvent('remove')
+
+	#updateAddable() {
+		if (this.#connected) {
+			this.#updateActions()
+		}
+	}
+
+	#updateRemovable() {
+		if (this.#connected) {
+			this.#updateActions()
+		}
+	}
+
+	#updateValue(dispatch = false) {
+		if (this.#connected) {
+			this.#updateSource()
+			if (dispatch) {
+				this.dispatchEvent(this.#mediaUploadChange)
+			}
+		}
+	}
+
+	#updateTypes() {
+		if (this.#connected) {
+			this.#updateMediaTypes()
+		}
+	}
 
 	#previewMedia(dt) {
-		this.#mediaUpload.classList.add('media-upload-wait')
+		this.classList.add('media-upload-wait')
 		const reader = new FileReader()
 		reader.readAsDataURL(dt.files[0])
 		reader.onloadend = () => {
 			this.setAttribute('value', reader.result)
-			this.#mediaUpload.classList.remove('media-upload-wait')
+			this.classList.remove('media-upload-wait')
 		}
 	}
 
@@ -157,7 +152,7 @@ class MediaUpload extends HTMLElement {
 	}
 
 	#updateActions() {
-		// console.log(`${this.id} updateActions()`)
+		// console.log(`${this.id} updateActions() addable=${this.addable} removable=${this.removable}`)
 		const mediaClear = this.shadowRoot.getElementById('media-clear')
 		const mediaZoom = this.shadowRoot.getElementById('media-zoom')
 		const mediaAdd = this.shadowRoot.getElementById('media-add')
@@ -172,17 +167,17 @@ class MediaUpload extends HTMLElement {
 			// mediaEdit.classList.add('hidden')
 			mediaZoom.classList.add('hidden')
 		}
-		if (this.addable !== null) {
+		if (this.addable) {
 			mediaAdd.classList.remove('hidden')
 		} else {
 			mediaAdd.classList.add('hidden')
 		}
-		if (this.removable !== null) {
+		if (this.removable) {
 			mediaRemove.classList.remove('hidden')
 		} else {
 			mediaRemove.classList.add('hidden')
 		}
-		if (this.value || this.addable !== null || this.removable !== null) {
+		if (this.value || this.addable || this.removable) {
 			this.#mediaActions.classList.remove('hidden')
 		} else {
 			this.#mediaActions.classList.add('hidden')
@@ -191,37 +186,41 @@ class MediaUpload extends HTMLElement {
 
 	#updateMediaTypes() {
 		// console.log(`${this.id} updateMediaTypes()`)
-		const mediaTypes = this.types.split(' ')
-		this.#mediaInput.setAttribute('accept',mediaTypes.join(', '))
-		let image = false
-		let video = false
-		for (const mediaType of mediaTypes) {
-			switch (mediaType) {
-				case 'image/jpeg':
-					image = true
-					break
-				case 'image/png':
-					image = true
-					break
-				case 'image/webp':
-					image = true
-					break
-				case 'video/mp4':
-					video = true
-					break
-				case 'video/webm':
-					video = true
-					break
+		if (!this.types) {
+			this.setAttribute('types', this.#mediaAccepted.join(' '))
+		} else {
+			const mediaTypes = this.types.split(' ')
+			this.#mediaInput.setAttribute('accept', mediaTypes.join(', '))
+			let image = false
+			let video = false
+			for (const mediaType of mediaTypes) {
+				switch (mediaType) {
+					case 'image/jpeg':
+						image = true
+						break
+					case 'image/png':
+						image = true
+						break
+					case 'image/webp':
+						image = true
+						break
+					case 'video/mp4':
+						video = true
+						break
+					case 'video/webm':
+						video = true
+						break
+				}
 			}
+			let mediaTypeImages = ''
+			if (image) {
+				mediaTypeImages += '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 16L10 13L21 18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 10C14.8954 10 14 9.10457 14 8C14 6.89543 14.8954 6 16 6C17.1046 6 18 6.89543 18 8C18 9.10457 17.1046 10 16 10Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+			}
+			if (video) {
+				mediaTypeImages += '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.89768 8.51296C9.49769 8.28439 9 8.57321 9 9.03391V14.9661C9 15.4268 9.49769 15.7156 9.89768 15.487L15.0883 12.5209C15.4914 12.2906 15.4914 11.7094 15.0883 11.4791L9.89768 8.51296Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+			}
+			this.#mediaTypes.innerHTML = mediaTypeImages
 		}
-		let mediaTypeImages = ''
-		if (image) {
-			mediaTypeImages += '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 16L10 13L21 18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 10C14.8954 10 14 9.10457 14 8C14 6.89543 14.8954 6 16 6C17.1046 6 18 6.89543 18 8C18 9.10457 17.1046 10 16 10Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
-		}
-		if (video) {
-			mediaTypeImages += '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M21 3.6V20.4C21 20.7314 20.7314 21 20.4 21H3.6C3.26863 21 3 20.7314 3 20.4V3.6C3 3.26863 3.26863 3 3.6 3H20.4C20.7314 3 21 3.26863 21 3.6Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.89768 8.51296C9.49769 8.28439 9 8.57321 9 9.03391V14.9661C9 15.4268 9.49769 15.7156 9.89768 15.487L15.0883 12.5209C15.4914 12.2906 15.4914 11.7094 15.0883 11.4791L9.89768 8.51296Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
-		}
-		this.#mediaTypes.innerHTML = mediaTypeImages
 	}
 
 	#updateSource() {
@@ -281,7 +280,6 @@ class MediaUpload extends HTMLElement {
 	}
 
 	#setElements() {
-		this.#mediaUpload = this.shadowRoot.getElementById('media-upload')
 		this.#mediaInput = this.shadowRoot.getElementById('media-input')
 		this.#mediaTypes = this.shadowRoot.querySelector('.media-types')
 		this.#mediaImagePreview = this.shadowRoot.querySelector('img')
@@ -294,16 +292,18 @@ class MediaUpload extends HTMLElement {
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
-				#media-upload {
+				* {
 					box-sizing: border-box;
-					display: flex;
+				}
+				:host {
+					display: inline-flex;
+					position: relative;
 					width: inherit;
 					height: inherit;
 					aspect-ratio: inherit;
 					border: 4px dashed lightblue;
 					place-content: center;
 					overflow: hidden;
-					position: relative;
 					cursor: pointer;
 				}
 				input {
@@ -359,10 +359,10 @@ class MediaUpload extends HTMLElement {
 				.media-actions button:hover svg {
 					stroke: #777;
 				}
-				#media-upload.media-upload-hover {
+				:host(.media-upload-hover) {
 					border-color: lightgreen;
 				}
-				#media-upload.media-upload-wait {
+				:host(.media-upload-wait) {
 					cursor: wait;
 				}
 				.media-actions button.hidden,
@@ -370,25 +370,23 @@ class MediaUpload extends HTMLElement {
 					display: none;
 				}
 			</style>
-			<div id="media-upload">
-				<input id="media-input" type="file">
-				<div class="media-types"></div>
-				<img class="media-preview hidden" alt="Image Preview">
-				<video controls class="media-preview hidden"></video>
-				<div class="media-actions hidden">
-					<button id="media-clear" tabindex="-1">
-						<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-					</button>
-					<button id="media-zoom" tabindex="-1">
-						<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M8 11H11M14 11H11M11 11V8M11 11V14" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 17L21 21" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-					</button>
-					<button id="media-add" class="hidden" tabindex="-1">
-						<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-					</button>
-					<button id="media-remove" class="hidden" tabindex="-1">
-						<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6 12H18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-					</button>
-				</div>
+			<input id="media-input" type="file">
+			<div class="media-types"></div>
+			<img class="media-preview hidden" alt="Image Preview">
+			<video controls class="media-preview hidden"></video>
+			<div class="media-actions hidden">
+				<button id="media-clear" tabindex="-1">
+					<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+				</button>
+				<button id="media-zoom" tabindex="-1">
+					<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M8 11H11M14 11H11M11 11V8M11 11V14" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 17L21 21" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+				</button>
+				<button id="media-add" class="hidden" tabindex="-1">
+					<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6 12H12M18 12H12M12 12V6M12 12V18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+				</button>
+				<button id="media-remove" class="hidden" tabindex="-1">
+					<svg viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M6 12H18" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+				</button>
 			</div>`
 	}
 
@@ -404,25 +402,25 @@ class MediaUpload extends HTMLElement {
 		this.#setElements()
 		this.#updateMediaTypes()
 		this.#updateSource()
-		this.#mediaUpload.addEventListener('click', this.#onClick = () => {
+		this.addEventListener('click', this.#onClick = () => {
 			this.#mediaInput.click()
 		})
-		this.#mediaUpload.addEventListener('dragenter', this.#onDragEnter = (event) => {
+		this.addEventListener('dragenter', this.#onDragEnter = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			this.#mediaUpload.classList.add('media-upload-hover')
+			this.classList.add('media-upload-hover')
 		})
-		this.#mediaUpload.addEventListener('dragover', this.#onDragOver = (event) => {
+		this.addEventListener('dragover', this.#onDragOver = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			this.#mediaUpload.classList.add('media-upload-hover')
+			this.classList.add('media-upload-hover')
 		})
-		this.#mediaUpload.addEventListener('dragleave', this.#onDragLeave = (event) => {
+		this.addEventListener('dragleave', this.#onDragLeave = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
-			this.#mediaUpload.classList.remove('media-upload-hover')
+			this.classList.remove('media-upload-hover')
 		})
-		this.#mediaUpload.addEventListener('drop', this.#onDrop = (event) => {
+		this.addEventListener('drop', this.#onDrop = (event) => {
 			event.preventDefault()
 			event.stopPropagation()
 			// console.log('upload drop')
@@ -437,7 +435,7 @@ class MediaUpload extends HTMLElement {
 					console.error('Invalid media type')
 				}
 			}
-			this.#mediaUpload.classList.remove('media-upload-hover')
+			this.classList.remove('media-upload-hover')
 			this.focus()
 		})
 		this.#mediaInput.addEventListener('change', this.#onChange = () => {
@@ -502,11 +500,11 @@ class MediaUpload extends HTMLElement {
 	}
 
 	disconnectedCallback() {
-		this.#mediaUpload.removeEventListener('click', this.#onClick)
-		this.#mediaUpload.removeEventListener('dragenter', this.#onDragEnter)
-		this.#mediaUpload.removeEventListener('dragover', this.#onDragOver)
-		this.#mediaUpload.removeEventListener('dragleave', this.#onDragLeave)
-		this.#mediaUpload.removeEventListener('drop', this.#onDrop)
+		this.removeEventListener('click', this.#onClick)
+		this.removeEventListener('dragenter', this.#onDragEnter)
+		this.removeEventListener('dragover', this.#onDragOver)
+		this.removeEventListener('dragleave', this.#onDragLeave)
+		this.removeEventListener('drop', this.#onDrop)
 		this.#mediaInput.removeEventListener('change', this.#onChange)
 		this.shadowRoot.getElementById('media-clear').removeEventListener('click', this.#onClear)
 		this.shadowRoot.getElementById('media-zoom').removeEventListener('click', this.#onZoom)

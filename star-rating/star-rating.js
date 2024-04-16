@@ -12,7 +12,7 @@ class StarRating extends HTMLElement {
 	attributeChangedCallback(name, oldValue, newValue) {
 		// console.log(`Attribute ${name} has changed from ${oldValue} to ${newValue}.`)
 		if (oldValue !== newValue) {
-			switch(name) {
+			switch (name) {
 				case 'stars':
 					this.#updateStars()
 					break
@@ -22,19 +22,19 @@ class StarRating extends HTMLElement {
 		}
 	}
 
-	get stars () {
+	get stars() {
 		return Number(this.getAttribute('stars'))
 	}
 
-	set stars (value) {
+	set stars(value) {
 		this.setAttribute('stars', Number(value) < 1 ? 5 : value)
 	}
 
-	get value () {
+	get value() {
 		return Number(this.getAttribute('value'))
 	}
 
-	set value (value) {
+	set value(value) {
 		this.setAttribute('value', Number(value) < 1 || Number(value) > this.stars ? null : value)
 	}
 
@@ -50,7 +50,7 @@ class StarRating extends HTMLElement {
 		if (this.#connected) {
 			this.#drawStars()
 		}
-    }
+	}
 
 	#updateValue(dispatch = false) {
 		if (this.#connected) {
@@ -59,7 +59,7 @@ class StarRating extends HTMLElement {
 				this.dispatchEvent(this.#starRatingChange)
 			}
 		}
-    }
+	}
 
 	#drawStars() {
 		this.#starRating.innerHTML = ''

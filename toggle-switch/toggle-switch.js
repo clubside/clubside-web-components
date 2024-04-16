@@ -11,7 +11,7 @@ class ToggleSwitch extends HTMLElement {
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (oldValue !== newValue) {
-			switch(name) {
+			switch (name) {
 				case 'checked':
 					this.#updateChecked(true)
 					break
@@ -21,42 +21,42 @@ class ToggleSwitch extends HTMLElement {
 		}
 	}
 
-	get checked () {
+	get checked() {
 		return this.hasAttribute('checked')
 	}
 
-	set checked (value) {
+	set checked(value) {
 		this.toggleAttribute('checked', value)
 	}
 
-	get disabled () {
+	get disabled() {
 		return this.hasAttribute('disabled')
 	}
 
-	set disabled (value) {
+	set disabled(value) {
 		this.toggleAttribute('disabled', value)
 	}
 
 	toggle = () => {
-        if (!this.disabled) {
-            this.checked = !this.checked
-        }
-    }
+		if (!this.disabled) {
+			this.checked = !this.checked
+		}
+	}
 
 	#onClick
 	#onKeyDown
 	#toggleSwitchChange = new CustomEvent('change')
 
 	#updateChecked(dispatch = false) {
-        this.setAttribute('aria-checked', this.checked.toString())
-        if (dispatch) {
+		this.setAttribute('aria-checked', this.checked.toString())
+		if (dispatch) {
 			this.dispatchEvent(this.#toggleSwitchChange)
 		}
-    }
+	}
 
 	#updateDisabled() {
-        this.setAttribute('aria-disabled', this.disabled.toString())
-    }
+		this.setAttribute('aria-disabled', this.disabled.toString())
+	}
 
 	constructor() {
 		super()
@@ -110,7 +110,7 @@ class ToggleSwitch extends HTMLElement {
 			this.setAttribute('tabindex', '0')
 		}
 		this.#updateChecked(false)
-        this.#updateDisabled()
+		this.#updateDisabled()
 		this.addEventListener('click', this.#onClick = () => {
 			this.toggle()
 		})

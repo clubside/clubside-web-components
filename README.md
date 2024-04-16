@@ -19,7 +19,7 @@ There are many image upload with preview solutions out there, this one is mine. 
 All attributes are optional.
 
 * `types` are the `MIME` types the element should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
-* `value` is an existing media reference to show when the element first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media.
+* `value` is an existing media reference to show when the element first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
 * `addable` indicates the user has the ability to add another instance of the element. You can use `.addEventListener('add', function)` to handle the event.
 * `removable` indicates the user has the ability to remove that instance of the element. You can use `.addEventListener('remove', remove)` to handle the event.
 
