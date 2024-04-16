@@ -55,6 +55,10 @@
 		<button id="save-two" type="button" class="button-form">Save</button>
 	</div>
 	<script>
+		function outputValue(event) {
+			console.log(event.target.id, event.target.value)
+		}
+
 		window.addEventListener('load', () => {
 			document.getElementById('set-to-one').addEventListener('click', () => {
 				document.getElementById('stars1').setAttribute('value', '1')
@@ -68,6 +72,8 @@
 			document.getElementById('save-two').addEventListener('click', () => {
 				console.log(`Star Rating 2 Value = ${document.getElementById('stars2').getAttribute('value')}`)
 			})
+			document.getElementById('stars1').addEventListener('change', outputValue)
+			document.getElementById('stars2').addEventListener('change', outputValue)
 		})
 	</script>
 </body>

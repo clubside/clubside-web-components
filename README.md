@@ -44,7 +44,7 @@ Another common pattern, this one was very frustrating owing to how `document.cre
 All attributes are optional.
 
 * `stars` is the number of stars to display. The default value is `5` and the minimum is `1`. There is no limit set but, y'know...
-* `value` is the number of stars set. Rather than supporting `0` stars excluding this attribute, or selecting the current number of stars, is meant to indicate no value set.
+* `value` is the number of stars set. Rather than supporting `0` stars excluding this attribute, or selecting the current number of stars, is meant to indicate no value set. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
 
 #### Keyboard Support
 
@@ -66,7 +66,7 @@ An approximation of the iOS toggle as a replacement for the standard `<input typ
 
 All attributes are optional.
 
-* `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the value changes, current value can be retrieved from `event.target.checked`.
+* `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the checked attribute changes, current value can be retrieved from `event.target.checked`.
 * `disabled` indicates whether the control can be toggled by the user.
 
 #### Methods
