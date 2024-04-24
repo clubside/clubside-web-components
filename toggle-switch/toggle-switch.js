@@ -129,7 +129,6 @@ class ToggleSwitch extends HTMLElement {
 		this.removeEventListener('click', this.#onClick)
 		this.removeEventListener('keydown', this.#onKeyDown)
 	}
-
 }
 
 ToggleSwitch.define()

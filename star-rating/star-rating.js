@@ -203,7 +203,6 @@ class StarRating extends HTMLElement {
 		this.#starRating.removeEventListener('mouseleave', this.#onMouseLeave)
 		this.removeEventListener('keydown', this.#onKeyDown)
 	}
-
 }
 
 StarRating.define()

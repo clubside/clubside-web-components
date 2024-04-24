@@ -512,7 +512,6 @@ class MediaUpload extends HTMLElement {
 		this.shadowRoot.getElementById('media-add').removeEventListener('click', this.#onAdd)
 		this.removeEventListener('keydown', this.#onKeyDown)
 	}
-
 }
 
 MediaUpload.define()
