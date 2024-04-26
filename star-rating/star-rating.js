@@ -107,9 +107,9 @@ class StarRating extends HTMLElement {
 					height: 1em;
 					display: block;
 					cursor: pointer;
-					stroke: black;
-					fill: none;
-					color: black;
+					stroke: inherit;
+					fill: inherit;
+					color: inherit;
 				}
 				.star-selected {
 					fill: yellow;
