@@ -17,6 +17,7 @@ class ToggleSwitch extends HTMLElement {
 					break
 				case 'disabled':
 					this.#updateDisabled()
+					break
 			}
 		}
 	}

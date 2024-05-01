@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>progress-bar Component Test Page</title>
+	<style>
+		:root {
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+		}
+		* {
+			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		body {
+			font-size: 1rem;
+			font-weight: 400;
+			padding: 1em;
+		}
+		button {
+			font-size: inherit;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+		}
+		.test-panel {
+			font-size: 1em;
+			line-height: 0;
+			margin-block: 1rem;
+		}
+		progress-bar {
+			background-color: #555;
+		}
+	</style>
+	<script src="progress-bar.js"></script>
+</head>
+
+<body>
+	<h1>toggle-switch test</h1>
+	<div class="test-panel" style="font-size: 2em;">
+		<progress-bar id="progress1"></progress-bar>
+	</div>
+	<div>
+		<button id="progress-one" type="button" class="button-form">Progress 100</button>
+	</div>
+	<div class="test-panel" style="font-size: 3em;">
+		<progress-bar id="progress2" max="188" nostripes></progress-bar>
+	</div>
+	<div>
+		<button id="progress-two" type="button" class="button-form">Progress 188</button>
+	</div>
+	<div class="test-panel" style="font-size: 4em;">
+		<progress-bar id="progress3" max="425" gradient="linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)"></progress-bar>
+	</div>
+	<div>
+		<button id="progress-three" type="button" class="button-form">Progress 425</button>
+	</div>
+	<div class="test-panel" style="font-size: 4em;">
+		<progress-bar id="progress4" gradient="radial-gradient(circle at bottom center, #FFC837 15px, #FF8008)"></progress-bar>
+	</div>
+	<div>
+		<button id="progress-four" type="button" class="button-form">Progress 100</button>
+	</div>
+	<script>
+		function animateProgresBar(element) {
+			const progress = document.getElementById(element)
+			progress.value = progress.value + 1
+			console.log({ element, value: progress.value })
+			if (progress.value < progress.max) {
+				setTimeout(() => { animateProgresBar(element) }, 50)
+			}
+		}
+		document.getElementById('progress-one').addEventListener('click', () => {
+			document.getElementById('progress1').value = 0
+			animateProgresBar('progress1')
+		})
+		document.getElementById('progress-two').addEventListener('click', () => {
+			document.getElementById('progress2').value = 0
+			animateProgresBar('progress2')
+		})
+		document.getElementById('progress-three').addEventListener('click', () => {
+			document.getElementById('progress3').value = 0
+			animateProgresBar('progress3')
+		})
+		document.getElementById('progress-four').addEventListener('click', () => {
+			document.getElementById('progress4').value = 0
+			animateProgresBar('progress4')
+		})
+	</script>
+</body>
+
+</html>

@@ -18,6 +18,7 @@ class StarRating extends HTMLElement {
 					break
 				case 'value':
 					this.#updateValue(true)
+					break
 			}
 		}
 	}

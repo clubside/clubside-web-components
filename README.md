@@ -18,10 +18,10 @@ There are many image upload with preview solutions out there, this one is mine. 
 
 All attributes are optional.
 
-* `types` are the `MIME` types the element should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
-* `value` is an existing media reference to show when the element first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
-* `addable` indicates the user has the ability to add another instance of the element. You can use `.addEventListener('add', function)` to handle the event.
-* `removable` indicates the user has the ability to remove that instance of the element. You can use `.addEventListener('remove', remove)` to handle the event.
+- `types` are the `MIME` types the element should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
+- `value` is an existing media reference to show when the element first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
+- `addable` indicates the user has the ability to add another instance of the element. You can use `.addEventListener('add', function)` to handle the event.
+- `removable` indicates the user has the ability to remove that instance of the element. You can use `.addEventListener('remove', remove)` to handle the event.
 
 #### Keyboard Support
 
@@ -43,8 +43,8 @@ Another common pattern, this one was very frustrating owing to how `document.cre
 
 All attributes are optional.
 
-* `stars` is the number of stars to display. The default value is `5` and the minimum is `1`. There is no limit set but, y'know...
-* `value` is the number of stars set. Rather than supporting `0` stars excluding this attribute, or selecting the current number of stars, is meant to indicate no value set. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
+- `stars` is the number of stars to display. The default value is `5` and the minimum is `1`. There is no limit set but, y'know...
+- `value` is the number of stars set. Rather than supporting `0` stars excluding this attribute, or selecting the current number of stars, is meant to indicate no value set. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
 
 #### Keyboard Support
 
@@ -66,12 +66,12 @@ An approximation of the iOS toggle as a replacement for the standard `<input typ
 
 All attributes are optional.
 
-* `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the checked attribute changes, current value can be retrieved from `event.target.checked`.
-* `disabled` indicates whether the control can be toggled by the user.
+- `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the checked attribute changes, current value can be retrieved from `event.target.checked`.
+- `disabled` indicates whether the control can be toggled by the user.
 
 #### Methods
 
-* `.toggle()` can be used to simulate user interactivity with the component. Calling `element.toggle()` is the same as sending a `click` event which will be ignored if the component currently has the `disabled` attribute set. Using `element.setAttribute(state)` is the only way to change the state regardless of `disabled`.
+- `.toggle()` can be used to simulate user interactivity with the component. Calling `element.toggle()` is the same as sending a `click` event which will be ignored if the component currently has the `disabled` attribute set. Using `element.setAttribute(state)` is the only way to change the state regardless of `disabled`.
 
 #### Keyboard Support
 
@@ -80,3 +80,22 @@ When focused both `Enter` and `Spacebar` with toggle a non-`disabled` instance.
 #### Appearance
 
 Another opinionated display in terms of colors, using greys for the `off` state background and off-green for `on`. Opacity is used to indicate `disabled`. The component will resize height based on `font-size` of the containing element.
+
+## progress-bar
+
+A fancy (for me 😜) progress bar as a replacement for the standard `<progress>` element. It uses the same attributes so it can be a drop-in replacement.
+
+### Usage
+
+`<progress-bar value="0" max="100" gradient="linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)" nostripes></progress-bar>`
+
+#### Attributes
+
+- `value` is the current progress of the control. It defaults to 0 and if it exceeds `max` it is set to `max`.
+- `max` is the maximum progress. It defaults to 100.
+- `gradient` allows a custom CSS `background-image` for the progress bar. This should be in the standard CSS format.
+- `nostripes` will disable the animated stripes normally applied to the progress bar.
+
+#### Appearance
+
+Mostly opinionated in terms of the border radius. There is a default gradient which is green-ish. The primary element is filled with an inherited `background-color`. The element scales based on `font-size`.
