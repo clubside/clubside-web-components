@@ -66,7 +66,7 @@ An approximation of the iOS toggle as a replacement for the standard `<input typ
 
 All attributes are optional.
 
-- `checked` indicates the componet is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the checked attribute changes, current value can be retrieved from `event.target.checked`.
+- `checked` indicates the component is currently in the `on` state. Using `.getAttribute('checked')` or `element.checked` will return a `boolean` indicating whether the switch is `on` or `off`. Fires `change` event when the checked attribute changes, current value can be retrieved from `event.target.checked`.
 - `disabled` indicates whether the control can be toggled by the user.
 
 #### Methods
@@ -99,3 +99,34 @@ A fancy (for me 😜) progress bar as a replacement for the standard `<progress>
 #### Appearance
 
 Mostly opinionated in terms of the border radius. There is a default gradient which is green-ish. The primary element is filled with an inherited `background-color`. The element scales based on `font-size`.
+
+## image-option-group
+
+An image-based option chooser with `option-group` and `multiple` behavior. Insert `<img>` elements inside the component to generate the options. At a minimum an `id` is necessary to generate each option's `id`. Additionally you can specify both a title and and initial checked state through `dataset` attributes `data-title` and `data-checked` respectively.
+
+### Usage
+
+`<image-option-group multiple><img id="test" src="test.png" data-title="Test" data-checked="false"></image-option-group>`
+
+#### Attributes
+
+- `multiple` to allow selection of multiple options. If not included only a single option within the group may be selected, clicking/tapping another removes the checked status of the others.
+
+#### Events
+
+- `change` is fired everytime the number of selected options changes.
+
+#### Properties
+
+- `value` returns an array of `id`s representing which options are checked.
+
+#### Appearance
+
+There are a few standard styles all of which can be overwriiten by targeting the approriate part.
+
+##### CSS Parts
+
+- `option` is the container `<div>` element which by default is `display: flex; flex-direction: column;`.
+- `image` is the option's `<img>` element.
+- `status` is the option's check box which at the moment uses a hard-coded gray-outlined circle to indicate unchecked and a filled-green circle with white checkmark to indicate checked. By default it is `position: absolute; top: 0; right: 0;width: 32px; height: 32px;`I have plans to allow passing the images used to indicate checked status in the future.
+- `title` is the optional `<div>` element that contains the title.

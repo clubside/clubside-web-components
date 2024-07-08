@@ -68,7 +68,7 @@ class ToggleSwitch extends HTMLElement {
 					box-sizing: border-box;
 				}
 				:host {
-					display: inline-block;
+					display: inline-flex;
 					height: 1em;
 					line-height: 0;
 					aspect-ratio: 5 / 3;
@@ -81,7 +81,7 @@ class ToggleSwitch extends HTMLElement {
 				span {
 					height: 1em;
 					aspect-ratio: 1 / 1;
-					display: inline-block;
+					display: inline-flex;
 					background: white;
 					transition: all 0.256s;
 					border-style: solid;

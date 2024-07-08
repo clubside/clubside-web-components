@@ -17,7 +17,9 @@ module.exports = [
 				HTMLElement: 'readonly',
 				customElements: 'readonly',
 				CustomEvent: 'readonly',
-				FileReader: 'readonly'
+				FileReader: 'readonly',
+				MutationObserver: 'readonly',
+				HTMLImageElement: 'readonly'
 			}
 		},
 		rules: {

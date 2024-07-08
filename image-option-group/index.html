@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>image-option-group Component Test Page</title>
+	<style>
+		:root {
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+		}
+		* {
+			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		body {
+			font-size: 1rem;
+			font-weight: 400;
+			padding: 1em;
+		}
+		button {
+			font-size: inherit;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+		}
+		image-option-group {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		image-option-group::part(option) {
+			margin: 0.5rem;
+			width: 128px;
+		}
+		image-option-group::part(img) {
+			width: 128px;
+		}
+		image-option-group::part(title) {
+			width: 100%;
+			font-size: 0.9em;
+			text-align: center;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			padding: 0.5rem 0;
+		}
+	</style>
+	<script src="image-option-group.js"></script>
+</head>
+
+<body>
+	<h1>image-option-group test</h1>
+	<h2>Single with initial option set</h2>
+	<image-option-group id="image-group-1">
+		<img id="owner" src="owner.png" data-title="Owner" data-checked="false">
+		<img id="admin" src="admin.png" data-title="Admin" data-checked="false">
+		<img id="player" src="player.png" data-title="Player" data-checked="true">
+	</image-option-group>
+	<h2>Multiple</h2>
+	<image-option-group id="image-group-2" multiple>
+		<img id="builder" src="builder.png" data-title="Builder" data-checked="false">
+		<img id="creative-help" src="creative-helper.png" data-title="Creative Helper" data-checked="false">
+		<img id="developer" src="developer.png" data-title="Developer" data-checked="false">
+		<img id="discord-helper" src="discord-helper.png" data-title="Discord Helper" data-checked="false">
+		<img id="event-manager" src="event-manager.png" data-title="Event Manager" data-checked="false">
+		<img id="in-game-helper" src="in-game-helper.png" data-title="In-Game Helper" data-checked="false">
+		<img id="media" src="media.png" data-title="Media" data-checked="false">
+	</image-option-group>
+	<h2>Single with no initial option set and no titles</h2>
+	<image-option-group id="image-group-3">
+		<img id="role-owner" src="owner.png" data-checked="false">
+		<img id="role-admin" src="admin.png" data-checked="false">
+		<img id="role-player" src="player.png" data-checked="false">
+	</image-option-group>
+	<script>
+		function outputValue(event) {
+			console.log(event.target.id, event.target.value)
+		}
+
+		window.addEventListener('load', () => {
+			for (let i = 1; i < 4; i++) {
+				document.getElementById(`image-group-${i}`).addEventListener('change', outputValue)
+			}
+		})
+	</script>
+</body>
+
+</html>
