@@ -15,7 +15,7 @@ class ImageOptionGroup extends HTMLElement {
 		optionElement.setAttribute('id', element.id)
 		optionElement.setAttribute('part', 'option')
 		optionElement.setAttribute('class', 'image-option')
-		optionElement.dataset.checked = false
+		optionElement.dataset.checked = element.dataset.checked || 'false'
 		const imgElement = document.createElement('img')
 		imgElement.setAttribute('src', element.src)
 		imgElement.setAttribute('part', 'img')
@@ -41,34 +41,35 @@ class ImageOptionGroup extends HTMLElement {
 			if (element.nodeName !== 'DIV') {
 				element = element.parentElement
 			}
-			// console.log(element.id, element.dataset.checked)
+			console.log({ id: element.id, checked: element.dataset.checked })
 			const checkStatus = this.shadowRoot.getElementById(`${element.id}-checked`)
 			// console.log(checkStatus)
 			if (element.dataset.checked === 'true') {
 				if (this.multiple) {
-					element.dataset.checked = false
+					element.dataset.checked = 'false'
 					checkStatus.setAttribute('src', this.#unchecked)
 					this.dispatchEvent(this.#imageCheckedChange)
 				}
 			} else {
 				if (this.multiple) {
-					element.dataset.checked = true
+					element.dataset.checked = 'true'
 					checkStatus.setAttribute('src', this.#checked)
 					this.dispatchEvent(this.#imageCheckedChange)
 				} else {
 					const options = this.shadowRoot.querySelectorAll('.image-option')
 					for (const option of options) {
-						option.dataset.checked = false
+						option.dataset.checked = 'false'
 						const optionChecked = this.shadowRoot.getElementById(`${option.id}-checked`)
 						optionChecked.setAttribute('src', this.#unchecked)
 					}
-					element.dataset.checked = true
+					element.dataset.checked = 'true'
 					checkStatus.setAttribute('src', this.#checked)
 					this.dispatchEvent(this.#imageCheckedChange)
 				}
 			}
 		})
 		this.shadowRoot.appendChild(optionElement)
+		element.remove()
 	}
 
 	observeMutations() {
@@ -170,6 +171,7 @@ class ImageOptionGroup extends HTMLElement {
 					position: relative;
 					display: flex;
 					flex-direction: column;
+					cursor: pointer;
 				}
 				.option-status {
 					position: absolute;
