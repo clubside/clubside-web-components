@@ -2,13 +2,11 @@
 
 While working on my [NFO editor for Kodi](https://github.com/clubside/KodiNFOMusicVideos) I ran into an issue when dealing with `fanart` since [Kodi](https://kodi.tv) supports multiple fanart and my simple JavaScript function had no way to broadcast an event back to the main script. I had played with [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) a bit in the past but was usually frustrated by the code. While there are plenty of great resources out there they rarely broke down clearly what I wanted to accomplish so I thought not only was this a great opportunity to learn something new but also pass along some things that might be helpful for others getting into the game.
 
-I'm organizing this the similarly to how the MDN examples at [web-components-examples](https://github.com/mdn/web-components-examples) are set up but with each component `.js` file named the way the element is used. There is a sample `html` file to show off the functionality but I definitely need to work on better documentation.
-
-None of these components currently work with form submission as I use them with `fetch` APIs. At some point I will modify them to follow the `formAssociated` guidelines as seen in [More capable form controls](https://web.dev/articles/more-capable-form-controls).
+I'm organizing this the similarly to how the MDN examples at [web-components-examples](https://github.com/mdn/web-components-examples) are set up but with each component `.js` file named the way the component is used. There is a sample `html` file to show off the functionality but I definitely need to work on better documentation.
 
 ## media-upload
 
-There are many image upload with preview solutions out there, this one is mine. It supports file selection and drag/drop, images and video, add and remove events as well as a simplistic zoom. I hope to make the zoom more full-featured and add crop functionality in the future. The sample page demonstrates adding/removing new instances of the element and a 'Save' button will `console.log()` the current media.
+There are many image upload with preview solutions out there, this one is mine. It supports file selection and drag/drop, images and video, add and remove events as well as a simplistic zoom. I hope to make the zoom more full-featured and add crop functionality in the future. The sample page demonstrates adding/removing new instances of the component and a 'Save' button will `console.log()` the current media.
 
 ### Usage
 
@@ -18,10 +16,11 @@ There are many image upload with preview solutions out there, this one is mine. 
 
 All attributes are optional.
 
-- `types` are the `MIME` types the element should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
-- `value` is an existing media reference to show when the element first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
-- `addable` indicates the user has the ability to add another instance of the element. You can use `.addEventListener('add', function)` to handle the event.
-- `removable` indicates the user has the ability to remove that instance of the element. You can use `.addEventListener('remove', remove)` to handle the event.
+- `addable` indicates the user has the ability to add another instance of the component. You can use `.addEventListener('add', function)` to handle the event.
+- `required` indicates a media file must be set before `<form>` validity will be true.
+- `removable` indicates the user has the ability to remove that instance of the component. You can use `.addEventListener('remove', remove)` to handle the event.
+- `types` are the `MIME` types the component should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
+- `value` is an existing media reference to show when the component first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
 
 #### Keyboard Support
 
@@ -29,7 +28,11 @@ When focused `Spacebar` will act the same as a `click` event, opening the OS dia
 
 #### Appearance
 
-The element has a number of internal styles that I probably need to work on since my pages are based on a full reset. In your own `CSS` you will need to specify dimensions for the element so all the internal elements can scale to that size.
+The component has a number of internal styles that I probably need to work on since my pages are based on a full reset. In your own `CSS` you will need to specify dimensions for the component so all the internal elements can scale to that size.
+
+#### Form support
+
+The component is fully compatible inside `<form>` elements. Seeting the `required` attribute will deny validity until a media file has been set.
 
 ## star-rating
 
@@ -98,7 +101,7 @@ A fancy (for me 😜) progress bar as a replacement for the standard `<progress>
 
 #### Appearance
 
-Mostly opinionated in terms of the border radius. There is a default gradient which is green-ish. The primary element is filled with an inherited `background-color`. The element scales based on `font-size`.
+Mostly opinionated in terms of the border radius. There is a default gradient which is green-ish. The primary element is filled with an inherited `background-color`. The component scales based on `font-size`.
 
 ## image-option-group
 
@@ -110,7 +113,10 @@ An image-based option chooser with `option-group` and `multiple` behavior. Inser
 
 #### Attributes
 
+- `disabled` indicates the user cannot interact with the component.
 - `multiple` to allow selection of multiple options. If not included only a single option within the group may be selected, clicking/tapping another removes the checked status of the others.
+- `required` indicates at least one option must be chosen when `multiple` is true, or one option chosen when not.
+- `value` is a semi-colon separated list of `id`s that are checked.
 
 #### Events
 
@@ -118,7 +124,14 @@ An image-based option chooser with `option-group` and `multiple` behavior. Inser
 
 #### Properties
 
-- `value` returns an array of `id`s representing which options are checked.
+- `disabled` returns or sets the `disabled` attribute as a boolean.
+- `multiple` returns or sets the `multiple` attribute as a boolean.
+- `required` returns or sets the `required` attribute as a boolean.
+- `value` returns an array of `id`s representing which options are checked or passes an array of `id`s to set as checked..
+
+#### Keyboard Support
+
+When focused both `Enter` and `Spacebar` with toggle a non-`disabled` option, and `tab` and `shift-tab` will navigate between options.
 
 #### Appearance
 
@@ -130,3 +143,7 @@ There are a few standard styles all of which can be overwriiten by targeting the
 - `image` is the option's `<img>` element.
 - `status` is the option's check box which at the moment uses a hard-coded gray-outlined circle to indicate unchecked and a filled-green circle with white checkmark to indicate checked. By default it is `position: absolute; top: 0; right: 0;width: 32px; height: 32px;`I have plans to allow passing the images used to indicate checked status in the future.
 - `title` is the optional `<div>` element that contains the title.
+
+#### Form support
+
+The component is fully compatible inside `<form>` elements. Seeting the `required` attribute will deny validity until at least one option has been chosen when the `multiple` attribute is set, .

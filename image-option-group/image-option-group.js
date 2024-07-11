@@ -6,6 +6,8 @@ class ImageOptionGroup extends HTMLElement {
 		customElements.define(tag, this)
 	}
 
+	static formAssociated = true
+
 	#checked = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPgogIDxjaXJjbGUgY3g9IjEyOCIgY3k9IjEyOCIgcj0iMTI4IiBmaWxsPSIjNDNhMDQ3IiBzdHJva2Utd2lkdGg9IjAiLz4KICA8cGF0aCBkPSJNMTc0LjEsNTkuNmwtNTkuNCw4NS4yLTQxLTMwLjUtMjAuNywyOC43LDY5LjksNTMuMyw4MC4xLTExNC44LTI4LjktMjEuOVoiIGZpbGw9IiNmZmYiIHN0cm9rZS13aWR0aD0iMCIvPgo8L3N2Zz4='
 	#unchecked = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPgogIDxwYXRoIGQ9Ik0xMjgsMjUyYy02OC40LDAtMTI0LTU1LjYtMTI0LTEyNFM1OS42LDQsMTI4LDRzMTI0LDU1LjYsMTI0LDEyNC01NS42LDEyNC0xMjQsMTI0WiIgZmlsbD0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+CiAgPHBhdGggZD0iTTEyOCw4YzMyLjEsMCw2Mi4yLDEyLjUsODQuOSwzNS4xLDIyLjcsMjIuNywzNS4xLDUyLjgsMzUuMSw4NC45cy0xMi41LDYyLjItMzUuMSw4NC45Yy0yMi43LDIyLjctNTIuOCwzNS4xLTg0LjksMzUuMXMtNjIuMi0xMi41LTg0LjktMzUuMWMtMjIuNy0yMi43LTM1LjEtNTIuOC0zNS4xLTg0LjlzMTIuNS02Mi4yLDM1LjEtODQuOWMyMi43LTIyLjcsNTIuOC0zNS4xLDg0LjktMzUuMU0xMjgsMEM1Ny4zLDAsMCw1Ny4zLDAsMTI4czU3LjMsMTI4LDEyOCwxMjgsMTI4LTU3LjMsMTI4LTEyOFMxOTguNywwLDEyOCwwaDBaIiBmaWxsPSIjYzhjOGM4IiBzdHJva2Utd2lkdGg9IjAiLz4KPC9zdmc+'
 
@@ -15,6 +17,7 @@ class ImageOptionGroup extends HTMLElement {
 		optionElement.setAttribute('id', element.id)
 		optionElement.setAttribute('part', 'option')
 		optionElement.setAttribute('class', 'image-option')
+		optionElement.setAttribute('tabindex', '0')
 		optionElement.dataset.checked = element.dataset.checked || 'false'
 		const imgElement = document.createElement('img')
 		imgElement.setAttribute('src', element.src)
@@ -67,6 +70,42 @@ class ImageOptionGroup extends HTMLElement {
 					this.dispatchEvent(this.#imageCheckedChange)
 				}
 			}
+			this.#setValue()
+		})
+		optionElement.addEventListener('keyup', (event) => {
+			if (event.key === ' ' || event.key === 'Enter') {
+				let element = event.target
+				if (element.nodeName !== 'DIV') {
+					element = element.parentElement
+				}
+				console.log({ id: element.id, checked: element.dataset.checked })
+				const checkStatus = this.shadowRoot.getElementById(`${element.id}-checked`)
+				// console.log(checkStatus)
+				if (element.dataset.checked === 'true') {
+					if (this.multiple) {
+						element.dataset.checked = 'false'
+						checkStatus.setAttribute('src', this.#unchecked)
+						this.dispatchEvent(this.#imageCheckedChange)
+					}
+				} else {
+					if (this.multiple) {
+						element.dataset.checked = 'true'
+						checkStatus.setAttribute('src', this.#checked)
+						this.dispatchEvent(this.#imageCheckedChange)
+					} else {
+						const options = this.shadowRoot.querySelectorAll('.image-option')
+						for (const option of options) {
+							option.dataset.checked = 'false'
+							const optionChecked = this.shadowRoot.getElementById(`${option.id}-checked`)
+							optionChecked.setAttribute('src', this.#unchecked)
+						}
+						element.dataset.checked = 'true'
+						checkStatus.setAttribute('src', this.#checked)
+						this.dispatchEvent(this.#imageCheckedChange)
+					}
+				}
+				this.#setValue()
+			}
 		})
 		this.shadowRoot.appendChild(optionElement)
 		element.remove()
@@ -93,20 +132,34 @@ class ImageOptionGroup extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ['multiple', 'disabled']
+		return ['disabled', 'multiple', 'required', 'value']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (oldValue !== newValue) {
 			switch (name) {
-				case 'multiple':
-					this.#updateMultiple()
-					break
 				case 'disabled':
 					this.#updateDisabled()
 					break
+				case 'multiple':
+					this.#updateMultiple()
+					break
+				case 'required':
+					this.#updateRequired()
+					break
+				case 'value':
+					this.#updateValue(newValue)
+					break
 			}
 		}
+	}
+
+	get disabled() {
+		return this.hasAttribute('disabled')
+	}
+
+	set disabled(value) {
+		this.toggleAttribute('disabled', value)
 	}
 
 	get multiple() {
@@ -117,12 +170,12 @@ class ImageOptionGroup extends HTMLElement {
 		this.toggleAttribute('multiple', value)
 	}
 
-	get disabled() {
-		return this.hasAttribute('disabled')
+	get required() {
+		return this.hasAttribute('required')
 	}
 
-	set disabled(value) {
-		this.toggleAttribute('disabled', value)
+	set required(value) {
+		this.toggleAttribute('required', value)
 	}
 
 	get value() {
@@ -136,9 +189,56 @@ class ImageOptionGroup extends HTMLElement {
 		return checked
 	}
 
-	#onClick
-	#onKeyDown
+	set value(value) {
+		if (Array.isArray(value)) {
+			const options = this.shadowRoot.querySelectorAll('.image-option')
+			for (const option of options) {
+				if (value.includes(option.id)) {
+					option.dataset.checked = 'true'
+				} else {
+					option.dataset.checked = 'false'
+				}
+			}
+			this.#setValue()
+		} else {
+			throw new Error('Value must be an array.')
+		}
+	}
+
+	get form() {
+		return this.#internals.form
+	}
+
+	get name() {
+		return this.#internals.name
+	}
+
+	get validity() {
+		return this.#internals.validity
+	}
+
+	get validationMessage() {
+		return this.#internals.validationMessage
+	}
+
+	get willValidate() {
+		return this.#internals.willValidate
+	}
+
+	checkValidity() {
+		return this.#internals.checkValidity()
+	}
+
+	reportValidity() {
+		return this.#internals.reportValidity()
+	}
+
+	#internals
 	#imageCheckedChange = new CustomEvent('change')
+
+	#updateDisabled() {
+		this.setAttribute('aria-disabled', this.disabled.toString())
+	}
 
 	#updateMultiple() {
 		if (this.multiple) {
@@ -148,12 +248,50 @@ class ImageOptionGroup extends HTMLElement {
 		}
 	}
 
-	#updateDisabled() {
-		this.setAttribute('aria-disabled', this.disabled.toString())
+	#updateRequired() {
+		this.setAttribute('aria-required', this.required.toString())
+	}
+
+	#setValue() {
+		const checked = []
+		const options = this.shadowRoot.querySelectorAll('.image-option')
+		for (const option of options) {
+			if (option.dataset.checked === 'true') {
+				checked.push(option.id)
+			}
+		}
+		this.#internals.setFormValue(checked.join(';'))
+		// console.log({ debug: 'setValue', required: this.required, disabled: this.disabled, checked })
+		if (this.required && !this.disabled) {
+			if (checked.length === 0) {
+				// console.error({ debug: 'setValue', message: 'no checked items' })
+				this.#internals.setValidity({ customError: true }, this.multiple ? 'Choose an option' : 'Choose at least one option')
+			} else {
+				// console.log({ debug: 'setValue', message: 'checked items' })
+				this.#internals.setValidity({})
+			}
+		} else {
+			// console.log({ debug: 'setValue', message: 'not required' })
+			this.#internals.setValidity({})
+		}
+	}
+
+	#updateValue(newValue) {
+		const ids = newValue.split(';')
+		const options = this.shadowRoot.querySelectorAll('.image-option')
+		for (const option of options) {
+			if (ids.includes(option.id)) {
+				option.dataset.checked = 'true'
+			} else {
+				option.dataset.checked = 'false'
+			}
+		}
+		this.#setValue()
 	}
 
 	constructor() {
 		super()
+		this.#internals = this.attachInternals()
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
@@ -191,25 +329,13 @@ class ImageOptionGroup extends HTMLElement {
 		if (!this.hasAttribute('tabindex')) {
 			this.setAttribute('tabindex', '0')
 		}
-		this.#updateMultiple()
 		this.#updateDisabled()
-		/* this.addEventListener('click', this.#onClick = () => {
-			this.toggle()
-		})
-		this.addEventListener('keydown', this.#onKeyDown = (event) => {
-			switch (event.key) {
-				case ' ':
-				case 'Enter':
-					event.preventDefault()
-					this.toggle()
-					break
-			}
-		}) */
+		this.#updateMultiple()
+		this.#updateRequired()
+		this.#setValue()
 	}
 
 	disconnectedCallback() {
-		// this.removeEventListener('click', this.#onClick)
-		// this.removeEventListener('keydown', this.#onKeyDown)
 		this.observer.disconnect()
 	}
 }

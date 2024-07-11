@@ -5,8 +5,10 @@ class MediaUpload extends HTMLElement {
 		customElements.define(tag, this)
 	}
 
+	static formAssociated = true
+
 	static get observedAttributes() {
-		return ['types', 'value', 'addable', 'removable']
+		return ['addable', 'removable', 'required', 'types', 'value']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -19,11 +21,14 @@ class MediaUpload extends HTMLElement {
 				case 'removable':
 					this.#updateRemovable()
 					break
-				case 'value':
-					this.#updateValue(true)
+				case 'required':
+					this.#updateRequired()
 					break
 				case 'types':
 					this.#updateTypes()
+					break
+				case 'value':
+					this.#updateValue(true)
 					break
 			}
 		}
@@ -45,12 +50,12 @@ class MediaUpload extends HTMLElement {
 		this.toggleAttribute('removable', value)
 	}
 
-	get value() {
-		return this.getAttribute('value')
+	get required() {
+		return this.hasAttribute('required')
 	}
 
-	set value(value) {
-		this.setAttribute('value', value)
+	set required(value) {
+		this.toggleAttribute('required', value)
 	}
 
 	get types() {
@@ -61,7 +66,44 @@ class MediaUpload extends HTMLElement {
 		this.setAttribute('types', value)
 	}
 
+	get value() {
+		return this.getAttribute('value')
+	}
+
+	set value(value) {
+		this.setAttribute('value', value)
+	}
+
+	get form() {
+		return this.#internals.form
+	}
+
+	get name() {
+		return this.#internals.name
+	}
+
+	get validity() {
+		return this.#internals.validity
+	}
+
+	get validationMessage() {
+		return this.#internals.validationMessage
+	}
+
+	get willValidate() {
+		return this.#internals.willValidate
+	}
+
+	checkValidity() {
+		return this.#internals.checkValidity()
+	}
+
+	reportValidity() {
+		return this.#internals.reportValidity()
+	}
+
 	#connected = false
+	#internals
 	#mediaImage = ['image/jpeg', 'image/png', 'image/webp']
 	#mediaVideo = ['video/mp4', 'video/webm']
 	#mediaAccepted = this.#mediaImage.concat(this.#mediaVideo)
@@ -85,33 +127,6 @@ class MediaUpload extends HTMLElement {
 	#mediaUploadChange = new CustomEvent('change')
 	#mediaUploadRemove = new CustomEvent('remove')
 
-	#updateAddable() {
-		if (this.#connected) {
-			this.#updateActions()
-		}
-	}
-
-	#updateRemovable() {
-		if (this.#connected) {
-			this.#updateActions()
-		}
-	}
-
-	#updateValue(dispatch = false) {
-		if (this.#connected) {
-			this.#updateSource()
-			if (dispatch) {
-				this.dispatchEvent(this.#mediaUploadChange)
-			}
-		}
-	}
-
-	#updateTypes() {
-		if (this.#connected) {
-			this.#updateMediaTypes()
-		}
-	}
-
 	#previewMedia(dt) {
 		this.classList.add('media-upload-wait')
 		const reader = new FileReader()
@@ -122,33 +137,12 @@ class MediaUpload extends HTMLElement {
 		}
 	}
 
-	#zoomMedia() {
-		const overlay = document.createElement('div')
-		overlay.id = 'media-upload-zoom'
-		overlay.setAttribute('style', 'position: fixed; width: 100vw; height: 100vh; inset: 0; background: black; z-index: 9999;')
-		overlay.addEventListener('click', () => {
-			document.getElementById('media-upload-zoom').remove()
-		})
-		if (!this.#mediaImagePreview.classList.contains('hidden')) {
-			const img = document.createElement('img')
-			img.setAttribute('src', this.value)
-			img.setAttribute('style', 'width: 100vw; height: 100vh; object-fit: contain;')
-			overlay.appendChild(img)
-		} else if (!this.#mediaVideoPreview.classList.contains('hidden')) {
-			const video = document.createElement('video')
-			video.setAttribute('controls', '')
-			video.setAttribute('style', 'width: 100vw; height: 100vh; object-fit: contain;')
-			video.innerHTML = this.#mediaVideoPreview.innerHTML
-			video.load()
-			overlay.appendChild(video)
-		} else {
-			console.error('No media to zoom')
-		}
-		const close = document.createElement('div')
-		close.setAttribute('style', 'position: absolute; top: 16px; right: 16px; width: 48px; height: 48px; border-radius: 50%; background-color: #777; cursor: pointer;')
-		close.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="none" color="white"><path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
-		overlay.appendChild(close)
-		document.body.appendChild(overlay)
+	#setElements() {
+		this.#mediaInput = this.shadowRoot.getElementById('media-input')
+		this.#mediaTypes = this.shadowRoot.querySelector('.media-types')
+		this.#mediaImagePreview = this.shadowRoot.querySelector('img')
+		this.#mediaVideoPreview = this.shadowRoot.querySelector('video')
+		this.#mediaActions = this.shadowRoot.querySelector('.media-actions')
 	}
 
 	#updateActions() {
@@ -181,6 +175,12 @@ class MediaUpload extends HTMLElement {
 			this.#mediaActions.classList.remove('hidden')
 		} else {
 			this.#mediaActions.classList.add('hidden')
+		}
+	}
+
+	#updateAddable() {
+		if (this.#connected) {
+			this.#updateActions()
 		}
 	}
 
@@ -221,6 +221,16 @@ class MediaUpload extends HTMLElement {
 			}
 			this.#mediaTypes.innerHTML = mediaTypeImages
 		}
+	}
+
+	#updateRemovable() {
+		if (this.#connected) {
+			this.#updateActions()
+		}
+	}
+
+	#updateRequired() {
+		this.setAttribute('aria-required', this.required.toString())
 	}
 
 	#updateSource() {
@@ -277,18 +287,69 @@ class MediaUpload extends HTMLElement {
 			this.#mediaTypes.classList.remove('hidden')
 		}
 		this.#updateActions()
+		this.#internals.setFormValue(this.value)
+		// console.log({ debug: 'updateSource', required: this.required, imageSource, videoSource })
+		if (this.required) {
+			if (imageSource || videoSource) {
+				// console.log({ debug: 'updateSource', message: 'source set' })
+				this.#internals.setValidity({})
+			} else {
+				// console.error({ debug: 'updateSource', message: 'no source set' })
+				this.#internals.setValidity({ customError: true }, 'Please provide an image')
+			}
+		} else {
+			// console.log({ debug: 'updateSource', message: 'not required' })
+			this.#internals.setValidity({})
+		}
 	}
 
-	#setElements() {
-		this.#mediaInput = this.shadowRoot.getElementById('media-input')
-		this.#mediaTypes = this.shadowRoot.querySelector('.media-types')
-		this.#mediaImagePreview = this.shadowRoot.querySelector('img')
-		this.#mediaVideoPreview = this.shadowRoot.querySelector('video')
-		this.#mediaActions = this.shadowRoot.querySelector('.media-actions')
+	#updateTypes() {
+		if (this.#connected) {
+			this.#updateMediaTypes()
+		}
+	}
+
+	#updateValue(dispatch = false) {
+		if (this.#connected) {
+			this.#updateSource()
+			if (dispatch) {
+				this.dispatchEvent(this.#mediaUploadChange)
+			}
+		}
+	}
+
+	#zoomMedia() {
+		const overlay = document.createElement('div')
+		overlay.id = 'media-upload-zoom'
+		overlay.setAttribute('style', 'position: fixed; width: 100vw; height: 100vh; inset: 0; background: black; z-index: 9999;')
+		overlay.addEventListener('click', () => {
+			document.getElementById('media-upload-zoom').remove()
+		})
+		if (!this.#mediaImagePreview.classList.contains('hidden')) {
+			const img = document.createElement('img')
+			img.setAttribute('src', this.value)
+			img.setAttribute('style', 'width: 100vw; height: 100vh; object-fit: contain;')
+			overlay.appendChild(img)
+		} else if (!this.#mediaVideoPreview.classList.contains('hidden')) {
+			const video = document.createElement('video')
+			video.setAttribute('controls', '')
+			video.setAttribute('style', 'width: 100vw; height: 100vh; object-fit: contain;')
+			video.innerHTML = this.#mediaVideoPreview.innerHTML
+			video.load()
+			overlay.appendChild(video)
+		} else {
+			console.error('No media to zoom')
+		}
+		const close = document.createElement('div')
+		close.setAttribute('style', 'position: absolute; top: 16px; right: 16px; width: 48px; height: 48px; border-radius: 50%; background-color: #777; cursor: pointer;')
+		close.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="1.5" fill="none" color="white"><path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+		overlay.appendChild(close)
+		document.body.appendChild(overlay)
 	}
 
 	constructor() {
 		super()
+		this.#internals = this.attachInternals()
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
@@ -401,6 +462,7 @@ class MediaUpload extends HTMLElement {
 		this.#connected = true
 		this.#setElements()
 		this.#updateMediaTypes()
+		this.#updateRequired()
 		this.#updateSource()
 		this.addEventListener('click', this.#onClick = () => {
 			this.#mediaInput.click()
