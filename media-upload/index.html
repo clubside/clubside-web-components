@@ -38,6 +38,9 @@
 			height: 250px;
 			aspect-ratio: 16 / 9;
 		}
+		#sample-image {
+			border: 3px dotted green;
+		}
 		media-upload:focus {
 			border-color: hsl(var(--input-focus-h) var(--input-focus-s) var(--input-focus-l));
 			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
@@ -49,13 +52,24 @@
 
 <body>
 	<h1>media-upload test</h1>
+	<h2>Multiple Inputs</h2>
+	<p>
+		This panel is inside a flex-box which will wrap. The first input only accepts jpg/png/webp images. The second input accepts all image and
+		video types and supports creating additional images through the plus button
+	</p>
 	<div id="panel-video-images">
-		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" value="sample.png"></media-upload>
+		<media-upload id="musicvideo-thumb" class="media-upload-1x1" types="image/jpeg image/png image/webp" value="../public/img/sample.png"></media-upload>
 		<media-upload id="musicvideo-fanart" class="media-upload-16x9" addable></media-upload>
 	</div>
 	<div>
 		<button id="save-stuff" type="button" class="button-form">Save</button>
 	</div>
+	<h2>Custom Styling</h2>
+	<p>
+		A single instance of the component accepting only images but of all 5 supported types avif/gif/jpg/png/webp. The styling is limited to the
+		component itself, in the future I'd like to support custom icons to indicate media types accepted and styling of the buttons.
+	</p>
+	<media-upload id="sample-image" class="media-upload-1x1" types="image/avif image/gif image/jpeg image/png image/svg+xml image/webp"></media-upload>
 	<script>
 		let fanartCount = 0
 

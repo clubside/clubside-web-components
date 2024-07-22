@@ -5,8 +5,10 @@ class ToggleSwitch extends HTMLElement {
 		customElements.define(tag, this)
 	}
 
+	static formAssociated = true
+
 	static get observedAttributes() {
-		return ['checked', 'disabled']
+		return ['checked', 'disabled', 'value']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -17,6 +19,9 @@ class ToggleSwitch extends HTMLElement {
 					break
 				case 'disabled':
 					this.#updateDisabled()
+					break
+				case 'value':
+					this.#updateValue(newValue)
 					break
 			}
 		}
@@ -38,12 +43,49 @@ class ToggleSwitch extends HTMLElement {
 		this.toggleAttribute('disabled', value)
 	}
 
+	get value() {
+		return this.getAttribute('value')
+	}
+
+	set value(value) {
+		this.setAttribute('value', value)
+	}
+
 	toggle = () => {
 		if (!this.disabled) {
 			this.checked = !this.checked
 		}
 	}
 
+	get form() {
+		return this.#internals.form
+	}
+
+	get name() {
+		return this.#internals.name
+	}
+
+	get validity() {
+		return this.#internals.validity
+	}
+
+	get validationMessage() {
+		return this.#internals.validationMessage
+	}
+
+	get willValidate() {
+		return this.#internals.willValidate
+	}
+
+	checkValidity() {
+		return this.#internals.checkValidity()
+	}
+
+	reportValidity() {
+		return this.#internals.reportValidity()
+	}
+
+	#internals
 	#onClick
 	#onKeyDown
 	#toggleSwitchChange = new CustomEvent('change')
@@ -59,8 +101,14 @@ class ToggleSwitch extends HTMLElement {
 		this.setAttribute('aria-disabled', this.disabled.toString())
 	}
 
+	#updateValue() {
+		this.#internals.setFormValue(this.value)
+		this.#internals.setValidity({})
+	}
+
 	constructor() {
 		super()
+		this.#internals = this.attachInternals()
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
@@ -101,7 +149,7 @@ class ToggleSwitch extends HTMLElement {
 					opacity: 0.5;
 				}
 			</style>
-			<span></span>`
+			<span part="inner"></span>`
 	}
 
 	connectedCallback() {

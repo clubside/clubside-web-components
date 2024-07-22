@@ -1,0 +1,33 @@
+{
+  "name": "clubside-web-components",
+  "version": "1.0.0",
+  "description": "A varfiety of web components to handle display and input tasks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clubside/clubside-web-components.git"
+  },
+  "keywords": [
+    "input",
+    "progress-bar",
+    "web-components",
+    "stars",
+    "input-group",
+    "media-upload",
+    "toggle-switch"
+  ],
+  "author": "Chris Rowley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clubside/clubside-web-components/issues"
+  },
+  "homepage": "https://github.com/clubside/clubside-web-components#readme",
+  "dependencies": {
+    "@fastify/formbody": "^7.4.0",
+    "@fastify/static": "^7.0.4",
+    "fastify": "^4.28.1"
+  }
+}

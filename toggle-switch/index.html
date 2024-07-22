@@ -34,12 +34,27 @@
 			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
 			outline: 3px solid transparent;
 		}
+		#toggle4 {
+			background: black;
+		}
+		#toggle4[checked] {
+			background: purple;
+		}
+		#toggle4::part(inner) {
+			background-color: lightyellow;
+			border-color: black;
+		}
+		#toggle4[checked]::part(inner) {
+			background-color: yellow;
+			border-color: purple;
+		}
 	</style>
 	<script src="toggle-switch.js"></script>
 </head>
 
 <body>
 	<h1>toggle-switch test</h1>
+	<h2>Font Size: 2em</h2>
 	<div class="test-panel" style="font-size: 2em;">
 		<toggle-switch id="toggle1" value="toggle1"></toggle-switch>
 	</div>
@@ -47,6 +62,7 @@
 		<button id="check-one" type="button" class="button-form">Check</button>
 		<button id="save-one" type="button" class="button-form">Save</button>
 	</div>
+	<h2>Font Size: 3em</h2>
 	<div class="test-panel" style="font-size: 3em;">
 		<toggle-switch id="toggle2" checked></toggle-switch>
 	</div>
@@ -54,6 +70,7 @@
 		<button id="uncheck-two" type="button" class="button-form">Uncheck</button>
 		<button id="save-two" type="button" class="button-form">Save</button>
 	</div>
+	<h2>Font Size: 4em</h2>
 	<div class="test-panel" style="font-size: 4em;">
 		<toggle-switch id="toggle3" disabled></toggle-switch>
 	</div>
@@ -62,6 +79,10 @@
 		<button id="disable-three" type="button" class="button-form">Disable</button>
 		<button id="toggle-three" type="button" class="button-form">Toggle</button>
 		<button id="save-three" type="button" class="button-form">Save</button>
+	</div>
+	<h2>Custom Styling</h2>
+	<div class="test-panel" style="font-size: 4em;">
+		<toggle-switch id="toggle4"></toggle-switch>
 	</div>
 	<script>
 		function outputChecked(event) {

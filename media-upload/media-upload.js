@@ -104,7 +104,7 @@ class MediaUpload extends HTMLElement {
 
 	#connected = false
 	#internals
-	#mediaImage = ['image/jpeg', 'image/png', 'image/webp']
+	#mediaImage = ['image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp']
 	#mediaVideo = ['video/mp4', 'video/webm']
 	#mediaAccepted = this.#mediaImage.concat(this.#mediaVideo)
 	#mediaInput = undefined
@@ -195,10 +195,19 @@ class MediaUpload extends HTMLElement {
 			let video = false
 			for (const mediaType of mediaTypes) {
 				switch (mediaType) {
+					case 'image/avif':
+						image = true
+						break
+					case 'image/gif':
+						image = true
+						break
 					case 'image/jpeg':
 						image = true
 						break
 					case 'image/png':
+						image = true
+						break
+					case 'image/svg+xml':
 						image = true
 						break
 					case 'image/webp':
@@ -494,7 +503,8 @@ class MediaUpload extends HTMLElement {
 				if (this.types.split(' ').includes(dt.files[0].type)) {
 					this.#previewMedia(dt)
 				} else {
-					console.error('Invalid media type')
+					console.error(`Invalid media type. You dropped a '${dt.files[0].type}' but this element only supports '${this.types}'`)
+					window.alert(`Invalid media type. You dropped a '${dt.files[0].type}' but this element only supports '${this.types}'`)
 				}
 			}
 			this.classList.remove('media-upload-hover')

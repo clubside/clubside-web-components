@@ -39,12 +39,26 @@
 			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
 			outline: 3px solid transparent;
 		}
+		#stars3 {
+			color: purple;
+			stroke: purple;
+		}
+		#stars3::part(star) {
+			fill: lightskyblue;
+		}
+		#stars3::part(star-selected) {
+			fill: lightsalmon;
+		}
+		#stars3::part(star-hover) {
+			fill: lightcoral;
+		}
 	</style>
 	<script src="star-rating.js"></script>
 </head>
 
 <body>
 	<h1>star-rating test</h1>
+	<h2>Font Size: 2em</h2>
 	<div class="test-panel">
 		<star-rating id="stars1" stars="10" value="3"></star-rating>
 	</div>
@@ -52,12 +66,17 @@
 		<button id="set-to-one" type="button" class="button-form">Set to 1 Star</button>
 		<button id="save-one" type="button" class="button-form">Save</button>
 	</div>
+	<h2>Font Size: 4em</h2>
 	<div class="test-panel" style="font-size: 4em;">
 		<star-rating id="stars2"></star-rating>
 	</div>
 	<div>
 		<button id="set-to-three" type="button" class="button-form">Set to 3 Stars</button>
 		<button id="save-two" type="button" class="button-form">Save</button>
+	</div>
+	<h2>Custom Styling</h2>
+	<div class="test-panel" style="font-size: 4em;">
+		<star-rating id="stars3"></star-rating>
 	</div>
 	<script>
 		function outputValue(event) {

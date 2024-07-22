@@ -5,14 +5,22 @@ class StarRating extends HTMLElement {
 		customElements.define(tag, this)
 	}
 
+	static formAssociated = true
+
 	static get observedAttributes() {
-		return ['stars', 'value']
+		return ['disabled', 'required', 'stars', 'value']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		// console.log(`Attribute ${name} has changed from ${oldValue} to ${newValue}.`)
 		if (oldValue !== newValue) {
 			switch (name) {
+				case 'disabled':
+					this.#updateDisabled()
+					break
+				case 'required':
+					this.#updateRequired()
+					break
 				case 'stars':
 					this.#updateStars()
 					break
@@ -21,6 +29,22 @@ class StarRating extends HTMLElement {
 					break
 			}
 		}
+	}
+
+	get disabled() {
+		return this.hasAttribute('disabled')
+	}
+
+	set disabled(value) {
+		this.toggleAttribute('disabled', value)
+	}
+
+	get required() {
+		return this.hasAttribute('required')
+	}
+
+	set required(value) {
+		this.toggleAttribute('required', value)
 	}
 
 	get stars() {
@@ -36,9 +60,38 @@ class StarRating extends HTMLElement {
 	}
 
 	set value(value) {
-		this.setAttribute('value', Number(value) < 1 || Number(value) > this.stars ? null : value)
+		this.setAttribute('value', Number(value) < 1 || Number(value) > this.stars ? 0 : value)
 	}
 
+	get form() {
+		return this.#internals.form
+	}
+
+	get name() {
+		return this.#internals.name
+	}
+
+	get validity() {
+		return this.#internals.validity
+	}
+
+	get validationMessage() {
+		return this.#internals.validationMessage
+	}
+
+	get willValidate() {
+		return this.#internals.willValidate
+	}
+
+	checkValidity() {
+		return this.#internals.checkValidity()
+	}
+
+	reportValidity() {
+		return this.#internals.reportValidity()
+	}
+
+	#internals
 	#connected = false
 	#starRating
 	#onClick
@@ -46,6 +99,14 @@ class StarRating extends HTMLElement {
 	#onMouseLeave
 	#onKeyDown
 	#starRatingChange = new CustomEvent('change')
+
+	#updateDisabled() {
+		this.setAttribute('aria-disabled', this.disabled.toString())
+	}
+
+	#updateRequired() {
+		this.setAttribute('aria-required', this.required.toString())
+	}
 
 	#updateStars() {
 		if (this.#connected) {
@@ -56,6 +117,18 @@ class StarRating extends HTMLElement {
 	#updateValue(dispatch = false) {
 		if (this.#connected) {
 			this.#fillStars()
+			if (this.required && !this.disabled) {
+				if (this.value === 0) {
+					// console.error({ debug: 'setValue', message: 'no checked items' })
+					this.#internals.setValidity({ customError: true }, 'Choose at least one star')
+				} else {
+					// console.log({ debug: 'setValue', message: 'checked items' })
+					this.#internals.setValidity({})
+				}
+			} else {
+				// console.log({ debug: 'setValue', message: 'not required' })
+				this.#internals.setValidity({})
+			}
 			if (dispatch) {
 				this.dispatchEvent(this.#starRatingChange)
 			}
@@ -65,11 +138,13 @@ class StarRating extends HTMLElement {
 	#drawStars() {
 		this.#starRating.innerHTML = ''
 		for (let i = 1; i < Number(this.stars) + 1; i++) {
+			let part = 'star'
 			let classList = 'star-input'
 			if (i <= this.value) {
+				part = 'star-selected'
 				classList += ' star-selected'
 			}
-			const star = `<svg id="star-rating-${i}" class="${classList}" data-stars="${i}" viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M8.58737 8.23597L11.1849 3.00376C11.5183 2.33208 12.4817 2.33208 12.8151 3.00376L15.4126 8.23597L21.2215 9.08017C21.9668 9.18848 22.2638 10.0994 21.7243 10.6219L17.5217 14.6918L18.5135 20.4414C18.6409 21.1798 17.8614 21.7428 17.1945 21.3941L12 18.678L6.80547 21.3941C6.1386 21.7428 5.35909 21.1798 5.48645 20.4414L6.47825 14.6918L2.27575 10.6219C1.73617 10.0994 2.03322 9.18848 2.77852 9.08017L8.58737 8.23597Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
+			const star = `<svg id="star-rating-${i}" class="${classList}" data-stars="${i}" part="${part}" viewBox="0 0 24 24" stroke-width="1.5" fill="inherit" color="inherit"><path d="M8.58737 8.23597L11.1849 3.00376C11.5183 2.33208 12.4817 2.33208 12.8151 3.00376L15.4126 8.23597L21.2215 9.08017C21.9668 9.18848 22.2638 10.0994 21.7243 10.6219L17.5217 14.6918L18.5135 20.4414C18.6409 21.1798 17.8614 21.7428 17.1945 21.3941L12 18.678L6.80547 21.3941C6.1386 21.7428 5.35909 21.1798 5.48645 20.4414L6.47825 14.6918L2.27575 10.6219C1.73617 10.0994 2.03322 9.18848 2.77852 9.08017L8.58737 8.23597Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`
 			this.#starRating.innerHTML += star
 		}
 		if (this.value > this.stars) {
@@ -82,8 +157,10 @@ class StarRating extends HTMLElement {
 			const star = this.shadowRoot.getElementById(`star-rating-${i}`)
 			if (i <= this.value) {
 				star.classList.add('star-selected')
+				star.setAttribute('part', 'star-selected')
 			} else {
 				star.classList.remove('star-selected')
+				star.setAttribute('part', 'star')
 			}
 			star.classList.remove('star-hover')
 		}
@@ -91,6 +168,7 @@ class StarRating extends HTMLElement {
 
 	constructor() {
 		super()
+		this.#internals = this.attachInternals()
 		const shadowroot = this.attachShadow({ mode: 'open' })
 		shadowroot.innerHTML = `
 			<style>
@@ -161,14 +239,21 @@ class StarRating extends HTMLElement {
 					const star = this.shadowRoot.getElementById(`star-rating-${i}`)
 					star.classList.remove('star-selected')
 					star.classList.remove('star-hover')
+					star.setAttribute('part', 'star')
 				}
 			} else {
 				for (let i = 1; i < Number(this.stars) + 1; i++) {
 					const star = this.shadowRoot.getElementById(`star-rating-${i}`)
 					if (i <= hoverValue) {
 						star.classList.add('star-hover')
+						star.setAttribute('part', 'star-hover')
 					} else {
 						star.classList.remove('star-hover')
+						if (i <= this.value) {
+							star.setAttribute('part', 'star-selected')
+						} else {
+							star.setAttribute('part', 'star')
+						}
 					}
 				}
 			}
