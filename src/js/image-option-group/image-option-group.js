@@ -261,7 +261,7 @@ class ImageOptionGroup extends HTMLElement {
 			}
 		}
 		this.#internals.setFormValue(checked.join(';'))
-		// console.log({ debug: 'setValue', required: this.required, disabled: this.disabled, checked })
+		// console.log({ debug: 'setValue', required: this.required, disabled: this.disabled, checked, form: this.#internals.value })
 		if (this.required && !this.disabled) {
 			if (checked.length === 0) {
 				// console.error({ debug: 'setValue', message: 'no checked items' })

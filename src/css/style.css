@@ -1,0 +1,80 @@
+:root {
+	--body-foreground: black;
+	--body-background: white;
+}
+
+* {
+	font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+html {
+	color-scheme: light dark;
+}
+
+body {
+	font-size: 1rem;
+	font-weight: 400;
+	color: var(--body-foreground);
+	background-color: var(--body-background);
+	margin: 1rem;
+	padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
+
+h1 {
+	font-weight: 900;
+	font-size: 2.5em;
+	margin-block: 0.67em;
+}
+
+h2 {
+	font-weight: 800;
+	font-size: 2em;
+	margin-block: 1em 0.3em;
+}
+
+h3 {
+	font-weight: 700;
+	font-size: 1.7em;
+	margin-block: 2em 0.3em;
+}
+
+h4 {
+	font-weight: 600;
+	font-size: 1.5em;
+	margin-block: 0 0.5em;
+}
+
+a {
+	text-decoration: underline;
+}
+
+strong {
+	font-weight: 700;
+}
+
+em {
+	font-style: italic;
+}
+
+form > div {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+form > div label span {
+	max-width: 25ch;
+	height: 40px;
+	text-wrap: balance;
+	display: flex;
+	align-items: end;
+}

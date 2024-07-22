@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Clubside Web Components Test Suite</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+	<link rel="manifest" href="site.webmanifest">
+	<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="css/the-new-css-reset.css" type="text/css">
+	<link rel="stylesheet" href="css/forms.css" type="text/css">
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+	<script src="js/image-option-group/image-option-group.js"></script>
+	<script src="js/media-upload/media-upload.js"></script>
+	<script src="js/star-rating/star-rating.js"></script>
+	<script src="js/toggle-switch/toggle-switch.js"></script>
+</head>
+
+<body>
+	<h1>Clubside Web Components Test Suite</h1>
+	<form method="post">
+		<h2>image-option-group</h2>
+		<div>
+			<label>
+				<span>What is your role?</span>
+				<image-option-group id="user-role" name="user-role" required>
+					<img id="owner" src="img/owner.png" data-title="Owner" data-checked="false">
+					<img id="admin" src="img/admin.png" data-title="Admin" data-checked="false">
+					<img id="player" src="img/player.png" data-title="Player" data-checked="false">
+				</image-option-group>
+			</label>
+			<label>
+				<span>What are your responsibilities?</span>
+				<image-option-group id="user-responsibilities" name="user-responsibilities" multiple>
+					<img id="builder" src="img/builder.png" data-title="Builder" data-checked="false">
+					<img id="creative-help" src="img/creative-helper.png" data-title="Creative Helper" data-checked="false">
+					<img id="developer" src="img/developer.png" data-title="Developer" data-checked="false">
+					<img id="discord-helper" src="img/discord-helper.png" data-title="Discord Helper" data-checked="false">
+					<img id="event-manager" src="img/event-manager.png" data-title="Event Manager" data-checked="false">
+					<img id="in-game-helper" src="img/in-game-helper.png" data-title="In-Game Helper" data-checked="false">
+					<img id="media" src="img/media.png" data-title="Media" data-checked="false">
+				</image-option-group>
+			</label>
+		</div>
+		<h2>media-upload</h2>
+		<label>
+			<span>Upload an avatar</span>
+			<media-upload id="avatar" name="avatar" class="media-upload-1x1" types="image/avif image/gif image/jpeg image/png image/svg+xml image/webp"></media-upload>
+		</label>
+		<h2>star-rating</h2>
+		<div>
+			<label>
+				<span>How would you rate these Web Components?</span>
+				<star-rating id="web-components-stars" name="web-components-stars" required></star-rating>
+			</label>
+			<label>
+				<span>This is not the rating you’re looking for.</span>
+				<star-rating id="disabled-stars" name="disabled-stars" stars="10" value="3" disabled></star-rating>
+			</label>
+		</div>
+		<h2>toggle-switch</h2>
+		<div>
+			<label>
+				<span>Do you like Web Components?</span>
+				<toggle-switch id="web-components-like" name="web-components-like" value="yes" checked></toggle-switch>
+			</label>
+			<label>
+				<span>Do you have a favorite node.js middleware?</span>
+				<toggle-switch id="nodejs-middleware" name="nodejs-middleware" value="yes" disabled></toggle-switch>
+			</label>
+			<label>
+				<span>Is your favorite color blue?</span>
+				<toggle-switch id="favorite-color" name="favorite-color" value="blue"></toggle-switch>
+			</label>
+		</div>
+		<div class="form-actions">
+			<button class="button-form" type="submit">Submit</button>
+		</div>
+	</form>
+</body>
+
+</html>

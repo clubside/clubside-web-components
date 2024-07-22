@@ -2,7 +2,7 @@
 
 While working on my [NFO editor for Kodi](https://github.com/clubside/KodiNFOMusicVideos) I ran into an issue when dealing with `fanart` since [Kodi](https://kodi.tv) supports multiple fanart and my simple JavaScript function had no way to broadcast an event back to the main script. I had played with [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) a bit in the past but was usually frustrated by the code. While there are plenty of great resources out there they rarely broke down clearly what I wanted to accomplish so I thought not only was this a great opportunity to learn something new but also pass along some things that might be helpful for others getting into the game.
 
-I'm organizing this the similarly to how the MDN examples at [web-components-examples](https://github.com/mdn/web-components-examples) are set up but with each component `.js` file named the way the component is used. There is a sample `html` file to show off the functionality but I definitely need to work on better documentation.
+I'm organizing this similarly to how the MDN examples at [web-components-examples](https://github.com/mdn/web-components-examples) are set up but with each component `.js` file named the way the component is used. There is a sample `html` file to show off the functionality but I definitely need to work on better documentation.
 
 ## media-upload
 
@@ -19,7 +19,7 @@ All attributes are optional.
 - `addable` indicates the user has the ability to add another instance of the component. You can use `.addEventListener('add', function)` to handle the event.
 - `required` indicates a media file must be set before `<form>` validity will be true.
 - `removable` indicates the user has the ability to remove that instance of the component. You can use `.addEventListener('remove', remove)` to handle the event.
-- `types` are the `MIME` types the component should accept separated by spaces. If none are provided all possible types are set which are `image/jpeg`, `image/png`, `image/webp`, `video/mp4` and `video/webm`. Currently unacceptable types only produce a `console.error()` message.
+- `types` are the `MIME` types the component should accept separated by spaces. If none are provided all possible types are set which are `image/avif`, `image/gif`, `image/jpeg`, `image/png`, `image/svg+xml`, `image/webp`, `video/mp4` and `video/webm`. Dropping an unacceptable type produces both `window.alert()` and `console.error()` messages of the dropped `MIME` type and a list of the acceptable types. This should be customizable in the future with a custom event trigger.
 - `value` is an existing media reference to show when the component first appears. When saving you can `.getAttribute('value')` or `element.value` to get the current media. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
 
 #### Keyboard Support
@@ -28,7 +28,7 @@ When focused `Spacebar` will act the same as a `click` event, opening the OS dia
 
 #### Appearance
 
-The component has a number of internal styles that I probably need to work on since my pages are based on a full reset. In your own `CSS` you will need to specify dimensions for the component so all the internal elements can scale to that size.
+The component has a number of internal styles that I probably need to work on since my pages are based on a full reset. In your own `CSS` you will need to specify dimensions for the component so all the internal elements can scale to that size. The example page shows how using `aspect-ratio` you can hint to the user the dimensions of the image you require. You can style the `border` of the component and hopefully in the future I will support styling the media formats supported icons as well as the buttons.
 
 #### Form support
 
@@ -55,7 +55,13 @@ When focused `ArrowLeft` will decrease `value` until `null`. `ArrowRight` will i
 
 #### Appearance
 
-This is an opinionated display in terms of colors, yellow for the current number of stars, gold when hovering. Otherwise it will scale with `font-size` as my use-case is inline but there's no reason you can't put it into a block-level container.
+You can style the `stroke` and `fill` of the stars at the top level and use `::part` to style the three states of the stars. There are default fill colors: white for unselected stars, yellow for selected stars and gold when hovering. Otherwise it will scale with `font-size` as my use-case is inline but there's no reason you can't put it into a block-level container.
+
+##### CSS Parts
+
+- `star` is the is the default state.
+- `star-selected` is for any star equal to or less than the current `value`.
+- `star-hover` is for stars when hovering. This is an adaptive state in that the hover styles are only applied to stars equal to or great than the current `value` while `star` is applied to any star greater than the one you're currently hovering over, all stars are set to `star` when you hover over the current `value`, and `star-selected` is applied to any star greater than the one being hovered and less than or equal to `value`. See demo page for how this works.
 
 ## toggle-switch
 

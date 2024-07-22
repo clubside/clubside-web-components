@@ -116,19 +116,7 @@ class StarRating extends HTMLElement {
 
 	#updateValue(dispatch = false) {
 		if (this.#connected) {
-			this.#fillStars()
-			if (this.required && !this.disabled) {
-				if (this.value === 0) {
-					// console.error({ debug: 'setValue', message: 'no checked items' })
-					this.#internals.setValidity({ customError: true }, 'Choose at least one star')
-				} else {
-					// console.log({ debug: 'setValue', message: 'checked items' })
-					this.#internals.setValidity({})
-				}
-			} else {
-				// console.log({ debug: 'setValue', message: 'not required' })
-				this.#internals.setValidity({})
-			}
+			this.#drawStars()
 			if (dispatch) {
 				this.dispatchEvent(this.#starRatingChange)
 			}
@@ -149,6 +137,19 @@ class StarRating extends HTMLElement {
 		}
 		if (this.value > this.stars) {
 			this.setAttribute('value', this.stars)
+		}
+		this.#internals.setFormValue(this.value)
+		if (this.required && !this.disabled) {
+			if (this.value === 0) {
+				// console.error({ debug: 'setValue', message: 'no checked items' })
+				this.#internals.setValidity({ customError: true }, 'Choose at least one star')
+			} else {
+				// console.log({ debug: 'setValue', message: 'checked items' })
+				this.#internals.setValidity({})
+			}
+		} else {
+			// console.log({ debug: 'setValue', message: 'not required' })
+			this.#internals.setValidity({})
 		}
 	}
 
@@ -177,6 +178,14 @@ class StarRating extends HTMLElement {
 				}
 				:host {
 					display: inline-flex;
+				}
+				:host([disabled]) {
+					cursor: default;
+					opacity: 0.5;
+				}
+				:host([disabled]) .star-input {
+					cursor: default;
+					opacity: 0.5;
 				}
 				span {
 					display: inline-flex;
@@ -228,6 +237,9 @@ class StarRating extends HTMLElement {
 			this.#fillStars()
 		})
 		this.#starRating.addEventListener('mousemove', this.#onMouseMove = (event) => {
+			if (this.disabled) {
+				return
+			}
 			let parent = this.shadowRoot.elementFromPoint(event.clientX, event.clientY)
 			while (!parent.id) {
 				parent = parent.parentNode
@@ -259,6 +271,9 @@ class StarRating extends HTMLElement {
 			}
 		})
 		this.#starRating.addEventListener('mouseleave', this.#onMouseLeave = () => {
+			if (this.disabled) {
+				return
+			}
 			this.#fillStars()
 		})
 		this.addEventListener('keydown', this.#onKeyDown = (event) => {

@@ -92,6 +92,7 @@ class ToggleSwitch extends HTMLElement {
 
 	#updateChecked(dispatch = false) {
 		this.setAttribute('aria-checked', this.checked.toString())
+		this.#updateValue()
 		if (dispatch) {
 			this.dispatchEvent(this.#toggleSwitchChange)
 		}
@@ -102,7 +103,11 @@ class ToggleSwitch extends HTMLElement {
 	}
 
 	#updateValue() {
-		this.#internals.setFormValue(this.value)
+		if (this.checked) {
+			this.#internals.setFormValue(this.value)
+		} else {
+			this.#internals.setFormValue(null)
+		}
 		this.#internals.setValidity({})
 	}
 
