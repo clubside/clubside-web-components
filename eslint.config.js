@@ -14,12 +14,15 @@ module.exports = [
 				__dirname: 'readonly',
 				setTimeout: 'readonly',
 				clearTimeout: 'readonly',
+				Buffer: 'readonly',
 				HTMLElement: 'readonly',
 				customElements: 'readonly',
 				CustomEvent: 'readonly',
-				FileReader: 'readonly',
+				alert: 'readonly',
+				BABYLON: 'readonly',
 				MutationObserver: 'readonly',
-				HTMLImageElement: 'readonly'
+				HTMLImageElement: 'readonly',
+				FileReader: 'readonly'
 			}
 		},
 		rules: {

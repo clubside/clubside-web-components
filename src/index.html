@@ -17,14 +17,18 @@
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 	<script src="js/image-option-group/image-option-group.js"></script>
 	<script src="js/media-upload/media-upload.js"></script>
+	<script src="js/progress-bar/progress-bar.js"></script>
 	<script src="js/star-rating/star-rating.js"></script>
 	<script src="js/toggle-switch/toggle-switch.js"></script>
 </head>
 
 <body>
+
 	<h1>Clubside Web Components Test Suite</h1>
+
+	<h2>Form Elements</h2>
 	<form method="post">
-		<h2>image-option-group</h2>
+		<h3>image-option-group</h3>
 		<div>
 			<label>
 				<span>What is your role?</span>
@@ -47,12 +51,12 @@
 				</image-option-group>
 			</label>
 		</div>
-		<h2>media-upload</h2>
+		<h3>media-upload</h3>
 		<label>
 			<span>Upload an avatar</span>
 			<media-upload id="avatar" name="avatar" class="media-upload-1x1" types="image/avif image/gif image/jpeg image/png image/svg+xml image/webp"></media-upload>
 		</label>
-		<h2>star-rating</h2>
+		<h3>star-rating</h3>
 		<div>
 			<label>
 				<span>How would you rate these Web Components?</span>
@@ -63,7 +67,7 @@
 				<star-rating id="disabled-stars" name="disabled-stars" stars="10" value="3" disabled></star-rating>
 			</label>
 		</div>
-		<h2>toggle-switch</h2>
+		<h3>toggle-switch</h3>
 		<div>
 			<label>
 				<span>Do you like Web Components?</span>
@@ -82,6 +86,27 @@
 			<button class="button-form" type="submit">Submit</button>
 		</div>
 	</form>
+
+	<h2>Non-Form Elements</h2>
+	<h3>progress-bar</h3>
+	<progress-bar id="progress1"></progress-bar>
+	<button id="progress-test" class="button-form" type="button">Animate</button>
+
+	<script>
+		function animateProgresBar(element) {
+			const progress = document.getElementById(element)
+			progress.value = progress.value + 1
+			console.log({ element, value: progress.value })
+			if (progress.value < progress.max) {
+				setTimeout(() => { animateProgresBar(element) }, 50)
+			}
+		}
+		document.getElementById('progress-test').addEventListener('click', () => {
+			document.getElementById('progress1').value = 0
+			animateProgresBar('progress1')
+		})
+	</script>
+
 </body>
 
 </html>

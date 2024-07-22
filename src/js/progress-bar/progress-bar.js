@@ -6,7 +6,7 @@ class ProgressBar extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ['value', 'max', 'gradient', 'nostripes']
+		return ['value', 'max', 'nostripes']
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -17,9 +17,6 @@ class ProgressBar extends HTMLElement {
 					break
 				case 'max':
 					this.#updateValue()
-					break
-				case 'gradient':
-					this.#updateGradient()
 					break
 				case 'nostripes':
 					this.#updateStripes()
@@ -44,14 +41,6 @@ class ProgressBar extends HTMLElement {
 		this.setAttribute('max', Number(value))
 	}
 
-	get gradient() {
-		return (this.getAttribute('gradient'))
-	}
-
-	set gradient(value) {
-		this.setAttribute('gradient', value)
-	}
-
 	get nostripes() {
 		return this.hasAttribute('nostripes')
 	}
@@ -66,12 +55,6 @@ class ProgressBar extends HTMLElement {
 			this.shadowRoot.querySelector('span').classList.add('finished')
 		} else {
 			this.shadowRoot.querySelector('span').classList.remove('finished')
-		}
-	}
-
-	#updateGradient() {
-		if (this.gradient !== '') {
-			this.shadowRoot.querySelector('span').style.backgroundImage = this.gradient
 		}
 	}
 
@@ -138,7 +121,7 @@ class ProgressBar extends HTMLElement {
 					100% { background-position: 2em 2em; }
 				}
 			</style>
-			<span></span>`
+			<span part="fill"></span>`
 	}
 
 	connectedCallback() {

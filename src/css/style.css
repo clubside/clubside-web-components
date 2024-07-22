@@ -44,7 +44,7 @@ h2 {
 h3 {
 	font-weight: 700;
 	font-size: 1.7em;
-	margin-block: 2em 0.3em;
+	margin-block: 0.5 0.3em;
 }
 
 h4 {
@@ -77,4 +77,10 @@ form > div label span {
 	text-wrap: balance;
 	display: flex;
 	align-items: end;
+}
+
+progress-bar {
+	font-size: 2em;
+	background-color: #555;
+	margin: 1rem 0;
 }
