@@ -84,3 +84,20 @@ progress-bar {
 	background-color: #555;
 	margin: 1rem 0;
 }
+
+#sample-file {
+	min-height: 48px;
+	background-color: #eee;
+}
+
+#sample-file::part(file-image) {
+	width: 36px;
+	height: 36px;
+}
+
+#sample-file::part(file-name) {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 20ch;
+}

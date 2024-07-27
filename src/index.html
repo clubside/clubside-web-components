@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="css/the-new-css-reset.css" type="text/css">
 	<link rel="stylesheet" href="css/forms.css" type="text/css">
 	<link rel="stylesheet" href="css/style.css" type="text/css">
+	<script src="js/file-upload/file-upload.js"></script>
 	<script src="js/image-option-group/image-option-group.js"></script>
 	<script src="js/media-upload/media-upload.js"></script>
 	<script src="js/progress-bar/progress-bar.js"></script>
@@ -28,6 +29,11 @@
 
 	<h2>Form Elements</h2>
 	<form method="post">
+		<h3>file-upload</h3>
+		<label>
+			<span>Upload a file</span>
+			<file-upload id="sample-file" name="sample-file" types="*.*|img/file.png" required></file-upload>
+		</label>
 		<h3>image-option-group</h3>
 		<div>
 			<label>
@@ -104,6 +110,26 @@
 		document.getElementById('progress-test').addEventListener('click', () => {
 			document.getElementById('progress1').value = 0
 			animateProgresBar('progress1')
+		})
+		window.addEventListener('load', () => {
+			const sampleFile = document.getElementById('sample-file')
+			let lookupTypes = []
+			lookupTypes.push('text/csv|img/csv.png')
+			lookupTypes.push('application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/doc.png')
+			lookupTypes.push('application/vnd.microsoft.portable-executable|img/exe.png')
+			lookupTypes.push('application/x-msdownload|img/exe.png')
+			lookupTypes.push('image/jpeg|img/jpg.png')
+			lookupTypes.push('application/json|img/json.png')
+			lookupTypes.push('video/mp4|img/mp4.png')
+			lookupTypes.push('application/pdf|img/pdf.png')
+			lookupTypes.push('image/png|img/png.png')
+			lookupTypes.push('image/psd|img/psd.png')
+			lookupTypes.push('image/vnd.adobe.photoshop|img/psd.png')
+			lookupTypes.push('image/svg+xml|img/svg.png')
+			lookupTypes.push('text/plain|img/txt.png')
+			lookupTypes.push('application/zip|img/zip.png')
+			lookupTypes.push('application/x-zip-compressed|img/zip.png')
+			sampleFile.setAttribute('lookup-types', lookupTypes.join(' '))
 		})
 	</script>
 

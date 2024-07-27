@@ -40,6 +40,7 @@ app.post('/', (request, reply) => {
 	<style>
 		p {
 			margin-block: 1rem;
+			word-break: break-word;
 		}
 	</style>
 </head>
@@ -49,10 +50,19 @@ app.post('/', (request, reply) => {
 	replyHtml += '\t<h1>Form Responses</h1>\n'
 	for (const [key, value] of Object.entries(formResponses)) {
 		// console.log(`${key}: ${value}`)
-		if (key === 'avatar') {
-			replyHtml += `\t<p>avatar =<br><img src="${value}"></p>\n`
-		} else {
-			replyHtml += `\t<p>${key} = <strong>${value}</strong></p>\n`
+		switch (key) {
+			case 'avatar':
+				replyHtml += `\t<p>avatar =<br><img src="${value}"></p>\n`
+				break
+			case 'sample-file': {
+				const endOfFilename = value.indexOf(';')
+				const endOfType = value.indexOf(';', endOfFilename + 1)
+				const type = value.substring(endOfFilename + 6, endOfType)
+				replyHtml += `\t<p>sample-file filename = <strong>${value.substring(0, endOfFilename)}</strong>, type = <strong>${type}</strong>, data = ${value.substring(endOfType + 1)}</p>\n`
+				break
+			}
+			default:
+				replyHtml += `\t<p>${key} = <strong>${value}</strong></p>\n`
 		}
 	}
 	replyHtml += `</body>

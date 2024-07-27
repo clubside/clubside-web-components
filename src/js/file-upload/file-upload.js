@@ -204,11 +204,11 @@ class FileUpload extends HTMLElement {
 				this.#lookupTypes.push(typeItem)
 			}
 		}
-		console.log({ fileTypes: this.#fileTypes, lookupTypes: this.#lookupTypes })
+		// console.log({ fileTypes: this.#fileTypes, lookupTypes: this.#lookupTypes })
 	}
 
 	#updateActions() {
-		console.log({ debug: '#updateActions', addable: this.addable, removable: this.removable, value: this.value })
+		// console.log({ debug: '#updateActions', addable: this.addable, removable: this.removable, value: this.value })
 		const fileClear = this.shadowRoot.getElementById('file-clear')
 		const fileAdd = this.shadowRoot.getElementById('file-add')
 		const fileRemove = this.shadowRoot.getElementById('file-remove')
@@ -291,26 +291,30 @@ class FileUpload extends HTMLElement {
 		console.log({ debug: '#updateSource', value: this.value })
 		this.#updatePlaceholder()
 		this.#updateActions()
-		this.#internals.setFormValue(this.value)
-		// console.log({ debug: 'updateSource', required: this.required, imageSource, videoSource })
-		if (this.required) {
-			if (this.#fileInput.value) {
-				// console.log({ debug: 'updateSource', message: 'source set' })
-				this.#internals.setValidity({})
-			} else {
-				// console.error({ debug: 'updateSource', message: 'no source set' })
-				this.#internals.setValidity({ customError: true }, 'Please provide an file')
-			}
-		} else {
-			// console.log({ debug: 'updateSource', message: 'not required' })
-			this.#internals.setValidity({})
-		}
+		this.#updateValue()
 		this.dispatchEvent(this.#fileUploadChange)
 	}
 
 	#updateTypes() {
 		if (this.#connected) {
 			this.#updateFileTypes()
+		}
+	}
+
+	#updateValue() {
+		this.#internals.setFormValue(this.value)
+		console.log({ debug: 'updateSource', required: this.required, value: this.value })
+		if (this.required) {
+			if (this.value) {
+				// console.log({ debug: 'updateSource', message: 'source set' })
+				this.#internals.setValidity({})
+			} else {
+				// console.error({ debug: 'updateSource', message: 'no source set' })
+				this.#internals.setValidity({ customError: true }, 'Please provide a file')
+			}
+		} else {
+			// console.log({ debug: 'updateSource', message: 'not required' })
+			this.#internals.setValidity({})
 		}
 	}
 
@@ -438,6 +442,7 @@ class FileUpload extends HTMLElement {
 		this.#updateRequired()
 		this.#updateAddable()
 		this.#updateRemovable()
+		this.#updateValue()
 		this.addEventListener('click', this.#onClick = () => {
 			this.#fileInput.click()
 		})

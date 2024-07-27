@@ -76,7 +76,7 @@
 		additional version of the component which can be removed.
 	</p>
 	<form id="import-form" name="import-form" action="#" method="get">
-		<file-upload id="import-document-1" name="import-document-1" class="import-document" types="application/msword|img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/docx.svg application/pdf|img/pdf.svg" addable></file-upload>
+		<file-upload id="import-document-1" name="import-document-1" class="import-document" types="application/msword|../../img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|../../img/docx.svg application/pdf|../../img/pdf.svg" addable></file-upload>
 	</form>
 	<div style="margin-top: 1rem;">
 		<button id="save-stuff" type="button" class="button-form">Save</button>
@@ -88,7 +88,7 @@
 		the placeholder into a stacked format and makes the action buttons absolutely positioned.
 	</p>
 	<form name="sample-document-form" action="#" method="get">
-		<file-upload id="sample-file" name="sample-file" types="*.*|img/file.png"></file-upload>
+		<file-upload id="sample-file" name="sample-file" types="*.*|../../img/file.png"></file-upload>
 	</form>
 	<script>
 		let importCount = 1
@@ -108,7 +108,7 @@
 			newImport.id = `import-document-${importCount}`
 			newImport.name = `import-document-${importCount}`
 			newImport.className = 'import-document'
-			newImport.setAttribute('types', 'application/msword|img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/docx.svg application/pdf|img/pdf.svg')
+			newImport.setAttribute('types', 'application/msword|../../img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|../../img/docx.svg application/pdf|../../img/pdf.svg')
 			newImport.setAttribute('addable', '')
 			newImport.setAttribute('removable', '')
 			newImport.addEventListener('add', addImport)
@@ -135,21 +135,21 @@
 		window.addEventListener('load', () => {
 			const sampleFile = document.getElementById('sample-file')
 			let lookupTypes = []
-			lookupTypes.push('text/csv|img/csv.png')
-			lookupTypes.push('application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/doc.png')
-			lookupTypes.push('application/vnd.microsoft.portable-executable|img/exe.png')
-			lookupTypes.push('application/x-msdownload|img/exe.png')
-			lookupTypes.push('image/jpeg|img/jpg.png')
-			lookupTypes.push('application/json|img/json.png')
-			lookupTypes.push('video/mp4|img/mp4.png')
-			lookupTypes.push('application/pdf|img/pdf.png')
-			lookupTypes.push('image/png|img/png.png')
-			lookupTypes.push('image/psd|img/psd.png')
-			lookupTypes.push('image/vnd.adobe.photoshop|img/psd.png')
-			lookupTypes.push('image/svg+xml|img/svg.png')
-			lookupTypes.push('text/plain|img/txt.png')
-			lookupTypes.push('application/zip|img/zip.png')
-			lookupTypes.push('application/x-zip-compressed|img/zip.png')
+			lookupTypes.push('text/csv|../../img/csv.png')
+			lookupTypes.push('application/vnd.openxmlformats-officedocument.wordprocessingml.document|../../img/doc.png')
+			lookupTypes.push('application/vnd.microsoft.portable-executable|../../img/exe.png')
+			lookupTypes.push('application/x-msdownload|../../img/exe.png')
+			lookupTypes.push('image/jpeg|../../img/jpg.png')
+			lookupTypes.push('application/json|../../img/json.png')
+			lookupTypes.push('video/mp4|../../img/mp4.png')
+			lookupTypes.push('application/pdf|../../img/pdf.png')
+			lookupTypes.push('image/png|../../img/png.png')
+			lookupTypes.push('image/psd|../../img/psd.png')
+			lookupTypes.push('image/vnd.adobe.photoshop|../../img/psd.png')
+			lookupTypes.push('image/svg+xml|../../img/svg.png')
+			lookupTypes.push('text/plain|../../img/txt.png')
+			lookupTypes.push('application/zip|../../img/zip.png')
+			lookupTypes.push('application/x-zip-compressed|../../img/zip.png')
 			sampleFile.setAttribute('lookup-types', lookupTypes.join(' '))
 			const importDocument = document.getElementById('import-document-1')
 			importDocument.addEventListener('add', addImport)
