@@ -304,7 +304,7 @@ class MediaUpload extends HTMLElement {
 				this.#internals.setValidity({})
 			} else {
 				// console.error({ debug: 'updateSource', message: 'no source set' })
-				this.#internals.setValidity({ customError: true }, 'Please provide an image')
+				this.#internals.setValidity({ customError: true }, 'Please provide an file')
 			}
 		} else {
 			// console.log({ debug: 'updateSource', message: 'not required' })

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>file-upload Component Test Page</title>
+	<style>
+		:root {
+			--input-focus-h: 245;
+			--input-focus-s: 100%;
+			--input-focus-l: 42%;
+		}
+		* {
+			font-family: system-ui, ui-sans-serif, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		}
+		body {
+			font-size: 1rem;
+			font-weight: 400;
+			padding: 1em;
+		}
+		button {
+			font-size: inherit;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+		}
+		#import-form {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 8px 16px;
+		}
+		.import-document {
+			min-height: 48px;
+			background-color: #eee;
+		}
+		.import-document::part(file-image) {
+			width: 36px;
+			height: 36px;
+		}
+		.import-document::part(file-name) {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			max-width: 20ch;
+		}
+		#sample-file {
+			height: 250px;
+			aspect-ratio: 1 / 1;
+			border: 3px dotted green;
+			position: relative;
+		}
+		#sample-file::part(file) {
+			flex-direction: column;
+		}
+		#sample-file::part(actions) {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			flex-direction: column;
+		}
+		file-upload:focus {
+			border-color: hsl(var(--input-focus-h) var(--input-focus-s) var(--input-focus-l));
+			box-shadow: 0 0 0 3px hsl(var(--input-focus-h) var(--input-focus-s) calc(var(--input-focus-l) + 40%) / 80%);
+			outline: 3px solid transparent;
+		}
+	</style>
+	<script src="file-upload.js"></script>
+</head>
+
+<body>
+	<h1>file-upload test</h1>
+	<h2>Addable</h2>
+	<p>
+		This panel is a flex-box which will wrap. The element only accepts doc, docx and pdf files. Clicking the plus button will add
+		additional version of the component which can be removed.
+	</p>
+	<form id="import-form" name="import-form" action="#" method="get">
+		<file-upload id="import-document-1" name="import-document-1" class="import-document" types="application/msword|img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/docx.svg application/pdf|img/pdf.svg" addable></file-upload>
+	</form>
+	<div style="margin-top: 1rem;">
+		<button id="save-stuff" type="button" class="button-form">Save</button>
+	</div>
+	<h2>Custom Styling</h2>
+	<p>
+		A single instance of the component accepting any file type. When a file is added a number of lookup types provide icons for
+		csv, docx, exe, jpg, json, mp4, pdf, png, psd, svg, txt and zip files otherwise a generic file icon is displayed. The styling converts
+		the placeholder into a stacked format and makes the action buttons absolutely positioned.
+	</p>
+	<form name="sample-document-form" action="#" method="get">
+		<file-upload id="sample-file" name="sample-file" types="*.*|img/file.png"></file-upload>
+	</form>
+	<script>
+		let importCount = 1
+
+		function truncateString(text) {
+			if (typeof text === 'string' && text.length > 32) {
+				return `${text.substring(0, 32)}...`
+			} else {
+				return text
+			}
+		}
+
+		function addImport() {
+			console.log('User wants to add new import item')
+			importCount++
+			const newImport = document.createElement('file-upload')
+			newImport.id = `import-document-${importCount}`
+			newImport.name = `import-document-${importCount}`
+			newImport.className = 'import-document'
+			newImport.setAttribute('types', 'application/msword|img/doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/docx.svg application/pdf|img/pdf.svg')
+			newImport.setAttribute('addable', '')
+			newImport.setAttribute('removable', '')
+			newImport.addEventListener('add', addImport)
+			newImport.addEventListener('remove', removeImport)
+			document.getElementById('import-form').appendChild(newImport)
+			newImport.focus()
+		}
+
+		function removeImport(event) {
+			console.log('User wants to remove fanart')
+			event.target.remove()
+		}
+
+		function saveStuff() {
+			const uploadDocuments = document.querySelectorAll('.import-document')
+			for (const uploadDocument of uploadDocuments) {
+				const endOfFilename = uploadDocument.value.indexOf(';')
+				const endOfType = uploadDocument.value.indexOf(';', endOfFilename + 1)
+				const type = uploadDocument.value.substring(endOfFilename + 6, endOfType)
+				console.log({ filename: uploadDocument.value.substring(0, endOfFilename), type, data: truncateString(uploadDocument.value.substring(endOfType + 1)) })
+			}
+		}
+
+		window.addEventListener('load', () => {
+			const sampleFile = document.getElementById('sample-file')
+			let lookupTypes = []
+			lookupTypes.push('text/csv|img/csv.png')
+			lookupTypes.push('application/vnd.openxmlformats-officedocument.wordprocessingml.document|img/doc.png')
+			lookupTypes.push('application/vnd.microsoft.portable-executable|img/exe.png')
+			lookupTypes.push('application/x-msdownload|img/exe.png')
+			lookupTypes.push('image/jpeg|img/jpg.png')
+			lookupTypes.push('application/json|img/json.png')
+			lookupTypes.push('video/mp4|img/mp4.png')
+			lookupTypes.push('application/pdf|img/pdf.png')
+			lookupTypes.push('image/png|img/png.png')
+			lookupTypes.push('image/psd|img/psd.png')
+			lookupTypes.push('image/vnd.adobe.photoshop|img/psd.png')
+			lookupTypes.push('image/svg+xml|img/svg.png')
+			lookupTypes.push('text/plain|img/txt.png')
+			lookupTypes.push('application/zip|img/zip.png')
+			lookupTypes.push('application/x-zip-compressed|img/zip.png')
+			sampleFile.setAttribute('lookup-types', lookupTypes.join(' '))
+			const importDocument = document.getElementById('import-document-1')
+			importDocument.addEventListener('add', addImport)
+			importDocument.addEventListener('remove', removeImport)
+			document.getElementById('save-stuff').addEventListener('click', saveStuff)
+		})
+	</script>
+</body>
+
+</html>

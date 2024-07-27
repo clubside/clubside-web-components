@@ -13,6 +13,45 @@ npm start
 
 then go to [http://http://localhost:3600/](http://http://localhost:3600/) to test all of the components including for submission support.
 
+## &lt;file-upload&gt;
+
+A replacement for the standard `<input type="file">`supporting normal file selection and drag/drop. I hope to make the zoom more full-featured and add crop functionality in the future. The sample page demonstrates adding/removing new instances of the component and a 'Save' button will `console.log()` the current files.
+
+### Usage
+
+`<image-upload types="image/jpeg image/png image/webp" lookup-types="image/svg+xml" addable removable>`
+
+#### Attributes
+
+All attributes are optional.
+
+- `addable` indicates the user has the ability to add another instance of the component. You can use `.addEventListener('add', function)` to handle the event.
+- `lookup-types` are the `MIME` types the component should use to provide additional types you want to visually represent but don't want to restrict the user from choosing in the dialog. As with `types` use a pipe character after the lookup type and provide a path to the icon to display such as `image/png|img/png.png`.
+- `placeholder` is the text to show when no file is set. The default is "Choose or drop a file".
+- `required` indicates a file must be set before `<form>` validity will be true.
+- `removable` indicates the user has the ability to remove that instance of the component. You can use `.addEventListener('remove', remove)` to handle the event.
+- `types` are the `MIME` types the component should accept separated by spaces. If none are provided all file types are are accepted through the `*.*` type. Dropping an unacceptable type produces both `window.alert()` and `console.error()` messages of the dropped `MIME` type and a list of the acceptable types. This should be customizable in the future with a custom event trigger. You may also provide icons to represent the types by adding a pipe character after the type and then providing a path to the icon to display such as `application/pdf|img/pdf.svg`.
+- `value` contains both the filename of the provided file as well as its encoded content separated by a `;`. Fires `change` event when the value changes, current value can be retrieved from `event.target.value`.
+
+#### Keyboard Support
+
+When focused `Spacebar` will act the same as a `click` event, opening the OS dialog to choose a file. `+` and `-` will trigger the `add` or `remove` events if those attributes are enabled.
+
+#### Appearance
+
+The component can easily be styled and provides a number CSS Parts to customize the internal elements. See the sample `html` file for examples of styling.
+
+##### CSS Parts
+
+- `file` is the placeholder `<div>` element which is the parent of either the.
+- `file-image` is the placeholder's `<img>` element.
+- `file-name` is the placeholder's `<span>` element.
+- `actions` is the toolbar with the `add`, `clear` and `remove` action buttons.
+
+#### Form support
+
+The component is fully compatible inside `<form>` elements. Seeting the `required` attribute will deny validity until a media file has been set. As this component encodes the chosen file `multipart` form handling is not required.
+
 ## &lt;image-option-group&gt;
 
 An image-based option chooser with `option-group` and `multiple` behavior. Insert `<img>` elements inside the component to generate the options. At a minimum an `id` is necessary to generate each option's `id`. Additionally you can specify both a title and and initial checked state through `dataset` attributes `data-title` and `data-checked` respectively.
@@ -86,7 +125,7 @@ The component has a number of internal styles that I probably need to work on si
 
 #### Form support
 
-The component is fully compatible inside `<form>` elements. Seeting the `required` attribute will deny validity until a media file has been set.
+The component is fully compatible inside `<form>` elements. Seeting the `required` attribute will deny validity until a media file has been set. As this component encodes the chosen file `multipart` form handling is not required.
 
 ## &lt;progress-bar&gt;
 
