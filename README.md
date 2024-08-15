@@ -15,11 +15,11 @@ then go to [http://http://localhost:3600/](http://http://localhost:3600/) to tes
 
 ## &lt;file-upload&gt;
 
-A replacement for the standard `<input type="file">`supporting normal file selection and drag/drop. I hope to make the zoom more full-featured and add crop functionality in the future. The sample page demonstrates adding/removing new instances of the component and a 'Save' button will `console.log()` the current files.
+A replacement for the standard `<input type="file">`supporting normal file selection and drag/drop. The sample page demonstrates adding/removing new instances of the component and a 'Save' button will `console.log()` the current files.
 
 ### Usage
 
-`<image-upload types="image/jpeg image/png image/webp" lookup-types="image/svg+xml" addable removable>`
+`<file-upload types=*.*|file.svg application/msword|doc.svg application/vnd.openxmlformats-officedocument.wordprocessingml.document|docx.svg application/pdf|pdf.svg" lookup-types="text/plain|txt.svg" addable removable>`
 
 #### Attributes
 
